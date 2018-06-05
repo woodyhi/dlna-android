@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">dlna</string>
+    <string name="title_activity_dlna_browser">DlnaBrowserActivity</string>
+    <string name="title_activity_local_content_directory">LocalContentDirectoryActivity</string>
+</resources>

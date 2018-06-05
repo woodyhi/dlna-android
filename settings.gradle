@@ -1,1 +1,2 @@
 include ':app', ':lib-cling'
+include ':demo'
