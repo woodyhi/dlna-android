@@ -3,10 +3,12 @@ package cn.cj.dlna;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 import cn.cj.dlna.dmc.LocalMediaServer;
+import cn.cj.dlna.dmc.NetUtil;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -43,6 +45,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 	}
 
 	private void startContentService(){
-		LocalMediaServer localMediaServer = LocalMediaServer.getInstance(getApplicationContext());
+		new Thread(new Runnable(){
+			@Override
+			public void run() {
+
+				Log.d("MainActivity", "" + NetUtil.isNetworkPortUsed(8192));
+
+				LocalMediaServer localMediaServer = LocalMediaServer.getInstance(getApplicationContext());
+				String s = localMediaServer.getAddress() + "\n " + 	localMediaServer.getLocalDevice()
+						+ localMediaServer.getListeningPort();
+				Log.d("MainActivity", s);
+
+			}
+		}).start();
 	}
 }

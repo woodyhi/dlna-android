@@ -7,12 +7,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import org.fourthline.cling.model.meta.Device;
-import org.fourthline.cling.model.meta.LocalDevice;
-import org.fourthline.cling.model.meta.RemoteDevice;
 import org.fourthline.cling.model.meta.Service;
+import org.fourthline.cling.model.types.UDADeviceType;
 import org.fourthline.cling.model.types.UDAServiceType;
 import org.fourthline.cling.registry.DefaultRegistryListener;
 import org.fourthline.cling.registry.Registry;
@@ -27,8 +25,7 @@ public class DlnaBrowserActivity extends AppCompatActivity {
     private Button search;
     private ListView listView;
 
-    private BrowseRegistryListener registryListener = new BrowseRegistryListener();
-
+    private UpnpComponent upnpComponent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,30 +33,40 @@ public class DlnaBrowserActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dlna_browser);
         search = (Button) findViewById(R.id.search);
         listView = (ListView) findViewById(R.id.listview);
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Device device = (Device) parent.getItemAtPosition(position);
 
-                new DMC_Controller().setUri(UpnpComponent.getsInstance(getApplicationContext()).getAndroidUpnpService(), device, MainActivity.PLAYURL);
+                new DMC_Controller().setUri(upnpComponent.getAndroidUpnpService(), device, MainActivity.PLAYURL);
             }
         });
+
         listView.setAdapter(new DeviceAdapter(this, new ArrayList<Device>()));
 
 
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listView.setAdapter(new DeviceAdapter(DlnaBrowserActivity.this, new ArrayList<Device>()));
-                if(UpnpComponent.getsInstance(getApplicationContext()).getAndroidUpnpService() != null){
-                    UpnpComponent.getsInstance(getApplicationContext()).getAndroidUpnpService().getRegistry().removeAllRemoteDevices();
-                    UpnpComponent.getsInstance(getApplicationContext()).getAndroidUpnpService().getControlPoint().search();
+                ((DeviceAdapter) listView.getAdapter()).clear();
+                if(upnpComponent.getAndroidUpnpService() != null){
+                    upnpComponent.getAndroidUpnpService().getRegistry().removeAllRemoteDevices();
+                    upnpComponent.getAndroidUpnpService().getControlPoint().search();
                 }
             }
         });
 
-        UpnpComponent.getsInstance(getApplicationContext()).addRegistryListener(registryListener);
-        UpnpComponent.getsInstance(getApplicationContext()).start();
+        upnpComponent = UpnpComponent.getsInstance();
+        upnpComponent.init(getApplicationContext());
+        upnpComponent.start();
+        upnpComponent.addRegistryListener(new BrowseRegistryListener());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        upnpComponent.stop();
     }
 
     @Override
@@ -69,72 +76,31 @@ public class DlnaBrowserActivity extends AppCompatActivity {
 
     protected class BrowseRegistryListener extends DefaultRegistryListener {
 
-        /* Discovery performance optimization for very slow Android devices! */
         @Override
-        public void remoteDeviceDiscoveryStarted(Registry registry, RemoteDevice device) {
-            System.out.println("************* remoteDeviceDiscoveryStarted");
-//            deviceAdded(device);
-        }
-
-        @Override
-        public void remoteDeviceDiscoveryFailed(Registry registry, final RemoteDevice device, final Exception ex) {
-            runOnUiThread(new Runnable() {
-                public void run() {
-                    Toast.makeText(
-                            getApplicationContext(),
-                            "Discovery failed of '" + device.getDisplayString() + "': "
-                                    + (ex != null ? ex.toString() : "Couldn't retrieve device/service descriptors"),
-                            Toast.LENGTH_LONG
-                    ).show();
-                }
-            });
-            deviceRemoved(device);
-        }
-        /* End of optimization, you can remove the whole block if your Android handset is fast (>= 600 Mhz) */
-
-        @Override
-        public void remoteDeviceAdded(Registry registry, RemoteDevice device) {
-            System.out.println("************* remoteDeviceAdded");
-            deviceAdded(device);
-        }
-
-        @Override
-        public void remoteDeviceRemoved(Registry registry, RemoteDevice device) {
-            deviceRemoved(device);
-        }
-
-        @Override
-        public void localDeviceAdded(Registry registry, LocalDevice device) {
-            System.out.println("************* localDeviceAdded");
-            deviceAdded(device);
-        }
-
-        @Override
-        public void localDeviceRemoved(Registry registry, LocalDevice device) {
-            deviceRemoved(device);
-        }
-
-        public void deviceAdded(final Device device) {
-            runOnUiThread(new Runnable() {
-                public void run() {
-                    Service localService = device.findService(new UDAServiceType("AVTransport"));
-//                    if(localService != null){
-                        ((DeviceAdapter)listView.getAdapter()).add(device);
-//                    }
-                    Log.d("----------deviceAdded", device.getDisplayString()
+        public void deviceAdded(Registry registry, final Device device) {
+            Log.d("----------deviceAdded", "\n" + device.getDisplayString()
                     + "\n" + device.getDetails().getFriendlyName() // 用这个名字显示设备
                     + "\n" + device.getDetails().getSerialNumber()
-                    + "\n" + device.getDetails().getUpc()
                     + "\n" + device.getDetails().getBaseURL()
-                    + "\n" + device.getDetails().getPresentationURI()
-                    + "\n" + device.getDetails().getModelDetails().getModelName());
+                    + "\n" + device.getDetails().getModelDetails().getModelName()
+                    + "\n" + device.getType()
+                    + "\n" + device.getType().getType());
+
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    Service avTransportS = device.findService(new UDAServiceType("AVTransport"));
+                    Service renderS = device.findService(new UDAServiceType("RenderingControl"));
+                    if(avTransportS != null || renderS != null){
+                        ((DeviceAdapter)listView.getAdapter()).add(device);
+                    }
                 }
             });
 
 
         }
 
-        public void deviceRemoved(final Device device) {
+        @Override
+        public void deviceRemoved(Registry registry, final Device device) {
             runOnUiThread(new Runnable() {
                 public void run() {
                     ((DeviceAdapter)listView.getAdapter()).remove(device);
@@ -165,7 +131,7 @@ public class DlnaBrowserActivity extends AppCompatActivity {
 //        // Use cling factory
 //        if (factory == null)
 //            new UpnpFa
-//            factory = new org.droidupnp.controller.cling.Factory();
+    // factory = new org.droidupnp.controller.cling.Factory();
 //
 //        // Upnp service
 //        if (upnpServiceController == null)
