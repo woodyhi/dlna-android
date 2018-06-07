@@ -1,5 +1,7 @@
 package cn.cj.dlna.component;
 
+
+import org.fourthline.cling.Main;
 import org.fourthline.cling.UpnpService;
 import org.fourthline.cling.android.AndroidUpnpService;
 import org.fourthline.cling.controlpoint.ActionCallback;
@@ -15,7 +17,16 @@ import org.fourthline.cling.support.avtransport.callback.SetAVTransportURI;
 import org.fourthline.cling.support.contentdirectory.callback.Browse;
 import org.fourthline.cling.support.model.BrowseFlag;
 import org.fourthline.cling.support.model.DIDLContent;
+import org.fourthline.cling.support.model.Res;
 import org.fourthline.cling.support.model.SortCriterion;
+import org.fourthline.cling.support.model.item.VideoItem;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+
+import cn.cj.dlna.MainActivity;
+import cn.cj.dlna.a.TrackMetadata;
 
 /**
  * Created by june on 2017/3/4.
@@ -23,17 +34,17 @@ import org.fourthline.cling.support.model.SortCriterion;
 
 public class DMC_Controller {
 
-    public void contentDirectory(final AndroidUpnpService upnpService, final Device device){
+    public void contentDirectory(final AndroidUpnpService upnpService, final Device device) {
         Service service = device.findService(new UDAServiceType("ContentDirectory"));
         ActionCallback actionCallback = new Browse(service, "0", BrowseFlag.DIRECT_CHILDREN, "*", 0,
                 null, new SortCriterion(true, "dc:title")) {
             @Override
             public void received(ActionInvocation actionInvocation, DIDLContent didlContent) {
-				try {
-					System.out.println("=======contentDirectory=====success===" + didlContent.getContainers().get(0).getTitle());
-				}catch (Exception e){
-					e.printStackTrace();
-				}
+                try {
+                    System.out.println("=======contentDirectory=====success===" + didlContent.getContainers().get(0).getTitle());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -49,36 +60,44 @@ public class DMC_Controller {
         upnpService.getControlPoint().execute(actionCallback);
     }
 
-    public void setUri(final AndroidUpnpService upnpService, final Device device, String uri){
-        final Service service = device.findService(new UDAServiceType("AVTransport"));
-        if(service == null){
-            System.out.println("AVTransport service is null");
-        }
-        try
-        {
-            ActionCallback setAVTransportURIAction = new SetAVTransportURI(service, uri)
-            {
+    public void setAVTransport(final AndroidUpnpService upnpService, final Device device, String uri) {
+        try {
+            final Service service = device.findService(new UDAServiceType("AVTransport"));
+            if (service == null) {
+                System.out.println("AVTransport service is null");
+                return;
+            }
+            VideoItem upnpItem = new VideoItem();
+            List<Res> ress = new ArrayList<>();
+            Res res = new Res();
+            res.setImportUri(new URI(MainActivity.PLAYURL));
+            ress.add(res);
+            upnpItem.setResources(ress);
+            String type = "videoItem";
+            // TODO genre && artURI
+            final org.droidupnp.model.cling.TrackMetadata trackMetadata = new org.droidupnp.model.cling.TrackMetadata(upnpItem.getId(), upnpItem.getTitle(),
+                    upnpItem.getCreator(), "", "", "",
+                    "object.item." + type);
+            ActionCallback actionCallback = new SetAVTransportURI(service, uri, trackMetadata.getXML()) {
                 @Override
-                public void success(@SuppressWarnings("rawtypes") ActionInvocation invocation)
-                {
+                public void success(@SuppressWarnings("rawtypes") ActionInvocation invocation) {
                     super.success(invocation);
                     System.out.println("设置URL成功");
                     play(upnpService, service);
                 }
-                public void failure(@SuppressWarnings("rawtypes") ActionInvocation invocation, UpnpResponse operation, String defaultMsg)
-                {
-                    System.out.println("设置URI失败" + operation.getResponseDetails() +"\n"+ defaultMsg);
+
+                public void failure(@SuppressWarnings("rawtypes") ActionInvocation invocation, UpnpResponse operation, String defaultMsg) {
+                    System.out.println("设置URI失败：\n" + operation.getResponseDetails() + "\n" + defaultMsg);
                 }
             };
-            upnpService.getControlPoint().execute(setAVTransportURIAction);
-        }
-        catch(Exception e)
-        {
+            upnpService.getControlPoint().execute(actionCallback);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void play(AndroidUpnpService upnpService, Service service){
+
+    public void play(AndroidUpnpService upnpService, Service service) {
         ActionCallback playa = new Play(service) {
             @Override
             public void success(ActionInvocation invocation) {

@@ -12,8 +12,8 @@ import cn.cj.dlna.dmc.NetUtil;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-	public static String PLAYURL = "http://125.88.92.165:30001/PLTV/88888956/224/3221227675/1.m3u8";
-	//    public static String PLAYURL = "http://devimages.apple.com/iphone/samples/bipbop/bipbopall.m3u8";
+	public static String PLAYURL = "http://devimages.apple.com/iphone/samples/bipbop/bipbopall.m3u8";
+
 	Button browser;
 	Button localContent;
 

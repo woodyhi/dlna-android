@@ -22,8 +22,9 @@ import org.fourthline.cling.registry.RegistryListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import cn.cj.dlna.R;
 import cn.cj.dlna.dmc.LocalMediaServer;
 
 /**
@@ -31,10 +32,12 @@ import cn.cj.dlna.dmc.LocalMediaServer;
  */
 
 public class UpnpComponent {
+	private Logger logger = Logger.getLogger(UpnpComponent.class.getSimpleName());
+
 	private Context context;
 
 	private AndroidUpnpService upnpService;
-	private BrowseRegistryListener registryListener = new BrowseRegistryListener();
+	private InternalRegistryListener internalRegistryListener = new InternalRegistryListener();
 
 	private static volatile UpnpComponent sInstance;
 
@@ -45,11 +48,10 @@ public class UpnpComponent {
 	private ServiceConnection serviceConnection = new ServiceConnection() {
 
 		public void onServiceConnected(ComponentName className, IBinder service) {
-			System.out.println("----------onServiceConnected");
 			upnpService = (AndroidUpnpService) service;
 
 			// Get ready for future device advertisements
-			upnpService.getRegistry().addListener(registryListener);
+			upnpService.getRegistry().addListener(internalRegistryListener);
 
 			try {
 				LocalMediaServer localMediaServer = new LocalMediaServer(context);
@@ -60,7 +62,7 @@ public class UpnpComponent {
 
 			// Now add all devices to the list we already know about
 			for (Device device : upnpService.getRegistry().getDevices()) {
-				registryListener.deviceAdded(null, device);
+				internalRegistryListener.deviceAdded(null, device);
 			}
 
 			// Search asynchronously for all devices, they will respond soon
@@ -93,7 +95,6 @@ public class UpnpComponent {
 
 	public void stop() {
 		context.getApplicationContext().unbindService(serviceConnection);
-		context.stopService(new Intent(context, AndroidUpnpServiceImpl.class));
 	}
 
 	public AndroidUpnpService getAndroidUpnpService(){
@@ -112,13 +113,13 @@ public class UpnpComponent {
 		registries.remove(listener);
 	}
 
-	protected class BrowseRegistryListener extends DefaultRegistryListener {
+	protected class InternalRegistryListener extends DefaultRegistryListener {
 
 		/* Discovery performance optimization for very slow Android devices! */
 		@Override
 		public void remoteDeviceDiscoveryStarted(Registry registry, RemoteDevice device) {
 				super.remoteDeviceDiscoveryStarted(registry, device);
-				System.out.println("************* remoteDeviceDiscoveryStarted");
+				logger.log(Level.INFO, "************* remoteDeviceDiscoveryStarted");
 				if(!registries.isEmpty()){
 					for(RegistryListener listener : registries){
 						listener.remoteDeviceDiscoveryStarted(registry, device);
@@ -129,6 +130,8 @@ public class UpnpComponent {
 		@Override
 		public void remoteDeviceDiscoveryFailed(Registry registry, final RemoteDevice device, final Exception ex) {
 			super.remoteDeviceDiscoveryFailed(registry, device, ex);
+			logger.log(Level.INFO, "************* remoteDeviceDiscoveryFailed");
+
 			if(!registries.isEmpty()){
 				for(RegistryListener listener : registries){
 					listener.remoteDeviceDiscoveryFailed(registry, device, ex);
@@ -146,7 +149,7 @@ public class UpnpComponent {
 		@Override
 		public void remoteDeviceAdded(Registry registry, RemoteDevice device) {
 			super.remoteDeviceAdded(registry, device);
-			System.out.println("************* remoteDeviceAdded");
+			logger.log(Level.INFO, "----- remoteDeviceAdded");
 			if(!registries.isEmpty()){
 				for(RegistryListener listener : registries){
 					listener.remoteDeviceAdded(registry, device);
@@ -157,6 +160,7 @@ public class UpnpComponent {
 		@Override
 		public void remoteDeviceRemoved(Registry registry, RemoteDevice device) {
 			super.remoteDeviceRemoved(registry, device);
+			logger.log(Level.INFO, "----- remoteDeviceRemoved");
 			if(!registries.isEmpty()){
 				for(RegistryListener listener : registries){
 					listener.remoteDeviceRemoved(registry, device);
@@ -167,7 +171,7 @@ public class UpnpComponent {
 		@Override
 		public void localDeviceAdded(Registry registry, LocalDevice device) {
 			super.localDeviceAdded(registry, device);
-			System.out.println("************* localDeviceAdded");
+			logger.log(Level.INFO, "----- localDeviceAdded");
 			if(!registries.isEmpty()){
 				for(RegistryListener listener : registries){
 					listener.localDeviceAdded(registry, device);
@@ -178,6 +182,7 @@ public class UpnpComponent {
 		@Override
 		public void localDeviceRemoved(Registry registry, LocalDevice device) {
 			super.localDeviceRemoved(registry, device);
+			logger.log(Level.INFO, "----- localDeviceRemoved");
 			if(!registries.isEmpty()){
 				for(RegistryListener listener : registries){
 					listener.localDeviceRemoved(registry, device);
@@ -187,6 +192,14 @@ public class UpnpComponent {
 
 		@Override
 		public void deviceAdded(Registry registry, final Device device) {
+			Log.d("-----deviceAdded", "\n" + device.getDisplayString()
+					+ "\n" + device.getDetails().getFriendlyName() // 用这个名字显示设备
+					+ "\n" + device.getDetails().getSerialNumber()
+					+ "\n" + device.getDetails().getBaseURL()
+					+ "\n" + device.getDetails().getModelDetails().getModelName()
+					+ "\n" + device.getType()
+					+ "\n" + device.getType().getType());
+
 			Service localService = device.findService(new UDAServiceType("AVTransport"));
 			if (localService != null) {
 			}

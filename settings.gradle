@@ -1,2 +1,2 @@
-include ':app', ':lib-cling'
+include ':app', ':lib-cling', ':lib-cling-android'
 include ':demo'

@@ -1,0 +1,7 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.woodyhi.lib_cling_android">
+
+    <application>
+        <service android:name="org.fourthline.cling.android.AndroidUpnpServiceImpl"/>
+    </application>
+</manifest>
