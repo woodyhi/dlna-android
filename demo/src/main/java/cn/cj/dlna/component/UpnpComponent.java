@@ -8,6 +8,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.fourthline.cling.UpnpService;
 import org.fourthline.cling.android.AndroidUpnpService;
 import org.fourthline.cling.android.AndroidUpnpServiceImpl;
 import org.fourthline.cling.model.meta.Device;
@@ -45,6 +46,8 @@ public class UpnpComponent {
 
 	private Vector<DefaultRegistryListener> registries = new Vector<>();
 
+	private ConnectionCallback connectionCallback;
+
 	private ServiceConnection serviceConnection = new ServiceConnection() {
 
 		public void onServiceConnected(ComponentName className, IBinder service) {
@@ -53,13 +56,6 @@ public class UpnpComponent {
 			// Get ready for future device advertisements
 			upnpService.getRegistry().addListener(internalRegistryListener);
 
-			try {
-				LocalMediaServer localMediaServer = new LocalMediaServer(context);
-				localMediaServer.start();
-			}catch (Exception e){
-				e.printStackTrace();
-			}
-
 			// Now add all devices to the list we already know about
 			for (Device device : upnpService.getRegistry().getDevices()) {
 				internalRegistryListener.deviceAdded(null, device);
@@ -67,10 +63,15 @@ public class UpnpComponent {
 
 			// Search asynchronously for all devices, they will respond soon
 			upnpService.getControlPoint().search();
+
+			if(connectionCallback != null){
+				connectionCallback.onConnected(upnpService);
+			}
 		}
 
 		public void onServiceDisconnected(ComponentName className) {
 			upnpService = null;
+			connectionCallback.onDisconnected();
 		}
 	};
 
@@ -111,6 +112,10 @@ public class UpnpComponent {
 
 	public void removeRegistryListener(DefaultRegistryListener listener){
 		registries.remove(listener);
+	}
+
+	public void setConnectionCallback(ConnectionCallback connectionCallback) {
+		this.connectionCallback = connectionCallback;
 	}
 
 	protected class InternalRegistryListener extends DefaultRegistryListener {
@@ -219,6 +224,11 @@ public class UpnpComponent {
 				}
 			}
 		}
+	}
+
+	public interface ConnectionCallback{
+		void onConnected(AndroidUpnpService upnpService);
+		void onDisconnected();
 	}
 
 }

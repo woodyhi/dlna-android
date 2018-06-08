@@ -8,7 +8,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 
 import org.fourthline.cling.model.meta.Device;
@@ -17,7 +16,7 @@ import org.fourthline.cling.registry.Registry;
 
 import java.util.ArrayList;
 
-import cn.cj.dlna.component.DMC_Controller;
+import cn.cj.dlna.component.DMCController;
 import cn.cj.dlna.component.UpnpComponent;
 
 public class DlnaBrowserActivity extends AppCompatActivity {
@@ -40,7 +39,7 @@ public class DlnaBrowserActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Device device = (Device) parent.getItemAtPosition(position);
 
-                new DMC_Controller().setAVTransport(upnpComponent.getAndroidUpnpService(), device, MainActivity.PLAYURL);
+                new DMCController().setAVTransport(upnpComponent.getAndroidUpnpService(), device, MainActivity.PLAYURL);
             }
         });
 
@@ -49,10 +48,9 @@ public class DlnaBrowserActivity extends AppCompatActivity {
 
         upnpComponent = UpnpComponent.getsInstance();
         upnpComponent.init(getApplicationContext());
-        upnpComponent.start();
         upnpComponent.addRegistryListener(new MediaRendererListener());
         upnpComponent.addRegistryListener(new MediaServerListener());
-
+        upnpComponent.start();
     }
 
     @Override
@@ -73,14 +71,9 @@ public class DlnaBrowserActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        upnpComponent.stop();
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
+        upnpComponent.stop();
     }
 
     private void search() {

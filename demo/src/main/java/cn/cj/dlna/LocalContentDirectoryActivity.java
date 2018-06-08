@@ -18,6 +18,8 @@ import cn.cj.dlna.dmc.LocalMediaServer;
 public class LocalContentDirectoryActivity extends AppCompatActivity {
 	private ListView listView;
 
+	UpnpComponent upnpComponent;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -27,14 +29,38 @@ public class LocalContentDirectoryActivity extends AppCompatActivity {
 
 		listView = (ListView) findViewById(R.id.listview);
 
+		upnpComponent = UpnpComponent.getsInstance();
+		upnpComponent.init(this);
 
-		browseLocalDevice();
+		upnpComponent.setConnectionCallback(new UpnpComponent.ConnectionCallback() {
+            @Override
+            public void onConnected(AndroidUpnpService upnpService) {
+                browseLocalDevice();
+            }
+
+            @Override
+            public void onDisconnected() {
+
+            }
+        });
 	}
 
 	private void browseLocalDevice(){
-//		AndroidUpnpService upnpService = UpnpComponent.getsInstance(getApplicationContext()).getAndroidUpnpService();
-//		LocalMediaServer localMediaServer = LocalMediaServer.getInstance(getApplicationContext());
-//		LocalDevice localDevice = localMediaServer.getLocalDevice();
-//		new ContentDirectoryCommand(upnpService).browse(localDevice, "0");
+		AndroidUpnpService upnpService = upnpComponent.getAndroidUpnpService();
+		LocalMediaServer localMediaServer = LocalMediaServer.getInstance(getApplicationContext());
+		LocalDevice localDevice = localMediaServer.getLocalDevice();
+		new ContentDirectoryCommand(upnpService).browse(localDevice, "0");
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		upnpComponent.start();
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		upnpComponent.stop();
 	}
 }
