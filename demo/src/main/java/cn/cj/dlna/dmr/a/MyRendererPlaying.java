@@ -23,7 +23,8 @@ public class MyRendererPlaying extends Playing {
     public void onEntry() {
         super.onEntry();
 
-        Log.d(TAG, "---onEntry");
+        Log.d(TAG, "---onEntry " + getTransport().getMediaInfo().getCurrentURI());
+
     }
 
     @Override

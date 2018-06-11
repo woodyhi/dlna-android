@@ -30,6 +30,8 @@ import cn.cj.dlna.dmc.LocalMediaServer;
 import cn.cj.dlna.dmr.LocalMediaRenderer;
 
 /**
+ * DLNA UPNP 管理组件
+ *
  * Created by June on 2017/3/7.
  */
 

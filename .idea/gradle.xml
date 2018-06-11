@@ -13,6 +13,7 @@
             <option value="$PROJECT_DIR$/lib-cling" />
             <option value="$PROJECT_DIR$/lib-cling-android" />
             <option value="$PROJECT_DIR$/mediaplayer" />
+            <option value="$PROJECT_DIR$/mediarenderer" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
