@@ -1,0 +1,140 @@
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:descendantFocusability="blocksDescendants"
+	android:gravity="center"
+	android:orientation="vertical">
+
+	<FrameLayout
+		android:id="@+id/surfaceview_parent"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="#ff110000">
+
+		<SurfaceView
+			android:id="@+id/surfaceview"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:layout_gravity="center" />
+
+		<LinearLayout
+			android:id="@+id/loading_view"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:gravity="center"
+			android:orientation="vertical">
+
+			<ProgressBar
+				android:id="@+id/progressbar"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:indeterminateDrawable="@drawable/loading_a"
+				android:orientation="horizontal" />
+		</LinearLayout>
+
+		<LinearLayout
+			android:id="@+id/volume_layout"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:background="#88888888"
+			android:orientation="vertical"
+			android:visibility="gone">
+
+			<TextView
+				android:id="@+id/volume_percent_tv"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="0%"
+				android:textColor="@android:color/white"
+				android:textSize="20sp" />
+		</LinearLayout>
+
+		<LinearLayout
+			android:id="@+id/fast_forward_progress_layout"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:background="#88888888"
+			android:orientation="vertical"
+			android:visibility="gone">
+
+			<TextView
+				android:id="@+id/fast_forward_progress_text"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="--:--/--:--"
+				android:textColor="@android:color/white"
+				android:textSize="20sp" />
+		</LinearLayout>
+
+		<LinearLayout
+			android:id="@+id/player_bottom_bar"
+			android:layout_width="match_parent"
+			android:layout_height="70dp"
+            android:padding="10dp"
+			android:layout_gravity="bottom"
+			android:background="#aa000000"
+			android:gravity="center_vertical"
+			android:orientation="horizontal"
+			android:visibility="gone">
+
+			<ImageView
+				android:id="@+id/play_pause_btn"
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:padding="15dp"
+				android:scaleType="center"
+				android:focusable="true"
+				android:contentDescription="@null"
+				android:background="@drawable/ic_media_pause" />
+			<LinearLayout
+				android:id="@+id/seekbar_layout"
+				android:layout_width="0dp"
+				android:gravity="center_vertical"
+				android:layout_weight="1"
+				android:layout_height="wrap_content">
+				<TextView
+					android:id="@+id/video_playtime"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginLeft="10dp"
+					android:text="@string/player_media_default_time"
+					android:textColor="@color/player_time_color"
+					android:textSize="12sp" />
+
+				<SeekBar
+					android:id="@+id/seekbar"
+					style="@style/Widget.SeekBar.PlayerProgress"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1" />
+
+				<TextView
+					android:id="@+id/video_durationtime"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginRight="10dp"
+					android:text="@string/player_media_default_time"
+					android:textColor="@color/player_time_color"
+					android:textSize="12sp" />
+			</LinearLayout>
+			<ImageView
+				android:id="@+id/open_close_fullscreen"
+				android:layout_margin="5dp"
+				android:layout_width="wrap_content"
+				android:contentDescription="@null"
+				android:layout_height="wrap_content"
+				android:background="@drawable/open_fullscreen"
+				android:visibility="gone"/>
+		</LinearLayout>
+		<ViewStub
+			android:id="@+id/player_error"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent" />
+
+	</FrameLayout>
+
+</LinearLayout>

@@ -4,7 +4,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "cn.cj.dlna"
-        minSdkVersion 15
+        minSdkVersion 17
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
@@ -34,4 +34,5 @@ dependencies {
     implementation 'com.android.support:design:27.1.1'
     testImplementation 'junit:junit:4.12'
     implementation project(':lib-cling-android')
+    implementation project(':mediaplayer')
 }
