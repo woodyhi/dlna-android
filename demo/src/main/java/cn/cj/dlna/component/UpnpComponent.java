@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import cn.cj.dlna.dmc.LocalMediaServer;
+import cn.cj.dlna.dmr.LocalMediaRenderer;
 
 /**
  * Created by June on 2017/3/7.
@@ -60,6 +61,9 @@ public class UpnpComponent {
 			for (Device device : upnpService.getRegistry().getDevices()) {
 				internalRegistryListener.deviceAdded(null, device);
 			}
+
+			upnpService.getRegistry().addDevice(LocalMediaRenderer.getInstance(context).getLocalDevice());
+
 
 			// Search asynchronously for all devices, they will respond soon
 			upnpService.getControlPoint().search();

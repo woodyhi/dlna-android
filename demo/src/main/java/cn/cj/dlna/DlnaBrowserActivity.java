@@ -9,15 +9,24 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import org.fourthline.cling.UpnpService;
+import org.fourthline.cling.android.AndroidUpnpService;
+import org.fourthline.cling.android.FixedAndroidLogHandler;
 import org.fourthline.cling.model.meta.Device;
 import org.fourthline.cling.registry.DefaultRegistryListener;
 import org.fourthline.cling.registry.Registry;
+import org.fourthline.cling.transport.Router;
+import org.fourthline.cling.transport.RouterException;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import cn.cj.dlna.component.DMCController;
 import cn.cj.dlna.component.UpnpComponent;
+import cn.cj.dlna.dmr.LocalMediaRenderer;
 
 public class DlnaBrowserActivity extends AppCompatActivity {
 
@@ -45,17 +54,24 @@ public class DlnaBrowserActivity extends AppCompatActivity {
 
         listView.setAdapter(new DeviceAdapter(this, new ArrayList<Device>()));
 
+        // Fix the logging integration between java.util.logging and Android internal logging
+        org.seamless.util.logging.LoggingUtil.resetRootHandler(
+                new FixedAndroidLogHandler()
+        );
 
         upnpComponent = UpnpComponent.getsInstance();
         upnpComponent.init(getApplicationContext());
         upnpComponent.addRegistryListener(new MediaRendererListener());
         upnpComponent.addRegistryListener(new MediaServerListener());
         upnpComponent.start();
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_browser, menu);
+        menu.add(0, 1, 0, "网络开关").setIcon(android.R.drawable.ic_menu_revert);
+        menu.add(0, 2, 0, "调试日志开关").setIcon(android.R.drawable.ic_menu_info_details);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -65,6 +81,34 @@ public class DlnaBrowserActivity extends AppCompatActivity {
         switch (id) {
             case R.id.action_search:
                 search();
+                return true;
+            case 1:
+                AndroidUpnpService upnpService = upnpComponent.getAndroidUpnpService();
+                if (upnpService != null) {
+                    Router router = upnpService.get().getRouter();
+                    try {
+                        if (router.isEnabled()) {
+                            Toast.makeText(this, "关闭网络", Toast.LENGTH_SHORT).show();
+                            router.disable();
+                        } else {
+                            Toast.makeText(this, "打开网络", Toast.LENGTH_SHORT).show();
+                            router.enable();
+                        }
+                    } catch (RouterException ex) {
+                        Toast.makeText(this, "网络切换出错" + ex.toString(), Toast.LENGTH_LONG).show();
+                        ex.printStackTrace(System.err);
+                    }
+                }
+                return true;
+            case 2:
+                Logger logger = Logger.getLogger("org.fourthline.cling");
+                if (logger.getLevel() != null && !logger.getLevel().equals(Level.INFO)) {
+                    Toast.makeText(this, "关闭调试日志", Toast.LENGTH_SHORT).show();
+                    logger.setLevel(Level.INFO);
+                } else {
+                    Toast.makeText(this, "打开调试日志", Toast.LENGTH_SHORT).show();
+                    logger.setLevel(Level.FINEST);
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);

@@ -1,0 +1,1 @@
+MediaRenderer服务的目的是远程控制一个媒体输出设备。一个实施了Render和AVTransport服务的设备，
