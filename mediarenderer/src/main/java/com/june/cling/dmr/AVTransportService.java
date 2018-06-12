@@ -59,7 +59,7 @@ public class AVTransportService extends AbstractAVTransportService {
     public void setAVTransportURI(UnsignedIntegerFourBytes instanceId,
                                   String currentURI,
                                   String currentURIMetaData) throws AVTransportException {
-        Log.d(TAG, currentURI + "---" +currentURIMetaData );
+        Log.d(TAG, "setAVTransportURI:\n uri : " + currentURI + "\n metadata : " + currentURIMetaData );
         URI uri;
         try {
             uri = new URI(currentURI);
@@ -73,9 +73,11 @@ public class AVTransportService extends AbstractAVTransportService {
             try {
                 HttpFetch.validate(URIUtil.toURL(uri));
             } catch (Exception ex) {
-                throw new AVTransportException(
-                        AVTransportErrorCode.RESOURCE_NOT_FOUND, ex.getMessage()
-                );
+                Log.e(TAG, "HttpFetch.validate", ex);
+//                ex.printStackTrace();
+//                throw new AVTransportException(
+//                        AVTransportErrorCode.RESOURCE_NOT_FOUND, ex.getMessage()
+//                );
             }
         } else if (!currentURI.startsWith("file:")) {
             throw new AVTransportException(

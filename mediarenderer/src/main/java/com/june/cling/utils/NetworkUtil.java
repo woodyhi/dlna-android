@@ -1,4 +1,4 @@
-package cn.cj.dlna.dmc;
+package com.june.cling.utils;
 
 import android.content.Context;
 import android.net.wifi.WifiInfo;
@@ -17,8 +17,8 @@ import java.util.Enumeration;
  * Created by June on 2017/3/7.
  */
 
-public class NetUtil {
-    private static final String TAG = "NetUtil";
+public class NetworkUtil {
+    private static final String TAG = NetworkUtil.class.getSimpleName();
 
     private static InetAddress getLocalIpAdressFromIntf(String intfName) {
         try {
@@ -101,5 +101,14 @@ public class NetUtil {
             }
         }
         return flag;
+    }
+
+    public static String getWifiMac(Context ctx) {
+        WifiManager wifi = (WifiManager) ctx.getSystemService(Context.WIFI_SERVICE);
+        WifiInfo info = wifi.getConnectionInfo();
+        String str = info.getMacAddress();
+        if (str == null)
+            str = "";
+        return str;
     }
 }

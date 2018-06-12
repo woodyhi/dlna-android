@@ -22,6 +22,7 @@ import java.net.UnknownHostException;
 import java.util.UUID;
 
 import cn.cj.dlna.R;
+import cn.cj.dlna.util.NetworkUtil;
 import fi.iki.elonen.SimpleWebServer;
 
 /**
@@ -61,7 +62,7 @@ public class LocalMediaServer extends SimpleWebServer{
 		}
 
 		try {
-			localAddress = NetUtil.getLocalIpAddress(context);
+			localAddress = NetworkUtil.getLocalIpAddress(context);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
@@ -76,7 +77,7 @@ public class LocalMediaServer extends SimpleWebServer{
 
 	public void createLocalDevice() throws UnknownHostException, ValidationException {
 		Log.i(TAG, "Creating media server !");
-		localAddress = NetUtil.getLocalIpAddress(context);
+		localAddress = NetworkUtil.getLocalIpAddress(context);
 
 
 		localService = new AnnotationLocalServiceBinder().read(ContentDirectoryService.class);

@@ -124,6 +124,9 @@ public class DlnaBrowserActivity extends AppCompatActivity {
         ((DeviceAdapter) listView.getAdapter()).clear();
         if (upnpComponent.getAndroidUpnpService() != null) {
             upnpComponent.getAndroidUpnpService().getRegistry().removeAllRemoteDevices();
+            for(Device d : upnpComponent.getAndroidUpnpService().getRegistry().getDevices()){
+                ((DeviceAdapter) listView.getAdapter()).add(d);
+            }
             upnpComponent.getAndroidUpnpService().getControlPoint().search();
         }
     }
@@ -201,14 +204,7 @@ public class DlnaBrowserActivity extends AppCompatActivity {
     }
 
 
-    //        if (localService != null) {
-    //            this.upnpService.getControlPoint().execute(
-    //                    new SetAVTransportURIActionCallback(localService,
-    //                            this.uriString, this.metaData, mHandle,
-    //                            this.controlType));
-    //        } else {
-    //            Log.e("null", "null");
-    //        }
+
 
     //        if (localService != null) {
     //            Log.e("start play", "start play");

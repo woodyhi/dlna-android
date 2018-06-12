@@ -1,0 +1,14 @@
+https://blog.csdn.net/zangcf/article/details/44222749
+
+https://github.com/4thline/cling/tree/master/mediarenderer/src/main/java/org/fourthline/cling/mediarenderer
+https://github.com/4thline/cling/tree/master/support/src/test/java/example/mediarenderer
+
+http://4thline.org/projects/cling/support/manual/cling-support-manual.xhtml#chapter.MediaRenderer
+
+
+
+
+
+https://www.programcreek.com/java-api-examples/index.php?source_dir=dlna-master/dlna/youplayer/src/org/teleal/cling/support/model/DescMeta.java#
+http://4thline.org/projects/cling/support/manual/cling-support-manual.xhtml#javadoc.example.mediarenderer.AVTransportTest.testCustomPlayer
+https://www.programcreek.com/java-api-examples/index.php?source_dir=cling-master/mediarenderer/src/main/java/org/fourthline/cling/mediarenderer/gstreamer/GstMediaPlayer.java#

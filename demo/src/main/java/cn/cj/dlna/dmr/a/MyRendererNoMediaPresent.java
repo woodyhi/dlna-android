@@ -12,6 +12,8 @@ import org.fourthline.cling.support.model.TransportAction;
 
 import java.net.URI;
 
+import cn.cj.dlna.a.TrackMetadata;
+
 /**
  * Created by June on 2018/6/11.
  */
@@ -30,7 +32,9 @@ public class MyRendererNoMediaPresent extends NoMediaPresent {
 
     @Override
     public Class<? extends AbstractState> setTransportURI(URI uri, String metaData) {
-        Log.d(TAG, "2---setTransportURI-- uri : " + uri.toString() + " \n metaData : " + metaData);
+        Log.d(TAG, "2---setTransportURI-- uri : " + uri.toString()
+                + "\n title : " + new TrackMetadata(metaData).title
+                + "\n metaData : " + metaData);
         getTransport().setMediaInfo(
                 new MediaInfo(uri.toString(), metaData)
         );

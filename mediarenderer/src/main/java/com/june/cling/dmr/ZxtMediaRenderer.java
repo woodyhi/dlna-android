@@ -5,6 +5,8 @@ import android.content.Context;
 import android.util.Log;
 
 
+import com.june.cling.utils.NetworkUtil;
+
 import org.fourthline.cling.binding.LocalServiceBinder;
 import org.fourthline.cling.binding.annotations.AnnotationLocalServiceBinder;
 import org.fourthline.cling.model.DefaultServiceManager;
@@ -29,7 +31,10 @@ import org.fourthline.cling.support.model.TransportState;
 import org.fourthline.cling.support.renderingcontrol.lastchange.RenderingControlLastChangeParser;
 
 import java.io.IOException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
 import java.util.Map;
+import java.util.UUID;
 
 public class ZxtMediaRenderer {
 
@@ -115,7 +120,7 @@ public class ZxtMediaRenderer {
         renderingControlService.setManager(renderingControl);
 
         try {
-            UDN  udn = UDN.uniqueSystemIdentifier("msidmr");
+            UDN  udn = createUDN("msidmr");
 
             device = new LocalDevice(
                     new DeviceIdentity(udn),
@@ -216,4 +221,25 @@ public class ZxtMediaRenderer {
         }
     }
 
+
+    /**
+     * ref to {@link UDN#uniqueSystemIdentifier}
+     * @param salt
+     * @return
+     */
+    private UDN createUDN(String salt){
+        StringBuilder systemSalt = new StringBuilder();
+        systemSalt.append(android.os.Build.MODEL);
+        systemSalt.append(android.os.Build.MANUFACTURER);
+        systemSalt.append(NetworkUtil.getWifiMac(mContext));
+
+        try {
+            byte[] hash = MessageDigest.getInstance("MD5").digest(systemSalt.toString().getBytes("UTF-8"));
+            return new UDN(new UUID(new BigInteger(-1, hash).longValue(), salt.hashCode()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //        new UUID(0, 10).toString();
+        return UDN.valueOf(systemSalt.toString());
+    }
 }

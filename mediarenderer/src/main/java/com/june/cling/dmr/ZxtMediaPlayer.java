@@ -5,8 +5,10 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.util.Log;
 
+import com.android.media.ui.VideoPlayerActivity;
 import com.june.cling.c.Action;
 
 import org.fourthline.cling.model.types.UnsignedIntegerFourBytes;
@@ -130,7 +132,9 @@ public class ZxtMediaPlayer {
 
    // @Override
     synchronized public void setURI(URI uri, String type, String name, String currentURIMetaData) {
-        Log.i(TAG, "setURI " + uri);
+        Log.d(TAG, "setURI : \n uri : " + uri
+                + "\n type : " + type
+                + "\n name : " + name);
 
         currentMediaInfo = new MediaInfo(uri.toString(),currentURIMetaData);
         currentPositionInfo = new PositionInfo(1, "", uri.toString());
@@ -144,13 +148,16 @@ public class ZxtMediaPlayer {
         /* june
         GPlayer.setMediaListener(new GstMediaListener());
         */
-
-        Intent intent = new Intent();
-        intent.setClass(mContext, RenderPlayerService.class);
-        intent.putExtra("type", type);
-        intent.putExtra("name", name);
-        intent.putExtra("playURI", uri.toString());
-        mContext.startService(intent);
+//        Intent intent = new Intent();
+//        intent.setClass(mContext, RenderPlayerService.class);
+//        intent.putExtra("type", type);
+//        intent.putExtra("name", name);
+//        intent.putExtra("playURI", uri.toString());
+//        mContext.startService(intent);
+        Intent intent2 = new Intent();
+        intent2.setClass(mContext.getApplicationContext(), VideoPlayerActivity.class);
+        intent2.setDataAndType(Uri.parse(uri.toString()), "video/*");
+        mContext.startActivity(intent2);
     }
 
 //    @Override

@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import cn.cj.dlna.dmc.LocalMediaServer;
-import cn.cj.dlna.dmc.NetUtil;
+import cn.cj.dlna.util.NetworkUtil;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 			@Override
 			public void run() {
 
-				Log.d("MainActivity", "" + NetUtil.isNetworkPortUsed(8192));
+				Log.d("MainActivity", "" + NetworkUtil.isNetworkPortUsed(8192));
 
 				LocalMediaServer localMediaServer = LocalMediaServer.getInstance(getApplicationContext());
 				String s = localMediaServer.getAddress() + "\n " + 	localMediaServer.getLocalDevice()
