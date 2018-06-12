@@ -27,6 +27,7 @@
         <activity
             android:name=".DlnaBrowserActivity"
             android:label="@string/title_activity_dlna_browser"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
