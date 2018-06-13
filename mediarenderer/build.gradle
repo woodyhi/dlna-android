@@ -8,12 +8,35 @@ android {
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
     }
+
+//    signingConfigs {
+//        def keystroePath = '../key.jks'
+//        debug {
+//            if(file(keystroePath).exists()) {
+//                keyAlias 'onekey'
+//                keyPassword '12345678'
+//                storeFile file(keystroePath)
+//                storePassword '12345678'
+//            }
+//        }
+//        release {
+//            if (file(keystroePath).exists()) {
+//                keyAlias 'onekey'
+//                keyPassword '12345678'
+//                storeFile file(keystroePath)
+//                storePassword '12345678'
+//            }
+//        }
+//    }
+
     buildTypes {
-        release {
+//        debug {
+//            signingConfig signingConfigs.release
+//        }
+        release{
+//            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
