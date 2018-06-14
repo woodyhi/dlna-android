@@ -1,6 +1,11 @@
 package cn.cj.dlna.dmr.a;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
+
+import com.android.media.ui.VideoPlayerActivity;
 
 import org.fourthline.cling.support.avtransport.impl.state.AbstractState;
 import org.fourthline.cling.support.avtransport.impl.state.Playing;
@@ -8,6 +13,8 @@ import org.fourthline.cling.support.model.AVTransport;
 import org.fourthline.cling.support.model.SeekMode;
 
 import java.net.URI;
+
+import cn.cj.dlna.AppContext;
 
 /**
  * Created by June on 2018/6/11.
@@ -25,6 +32,12 @@ public class MyRendererPlaying extends Playing {
 
         Log.d(TAG, "---onEntry " + getTransport().getMediaInfo().getCurrentURI());
 
+        Context context = AppContext.getsInstance();
+        Intent intent2 = new Intent();
+        intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent2.setClass(context.getApplicationContext(), VideoPlayerActivity.class);
+        intent2.setDataAndType(Uri.parse(getTransport().getMediaInfo().getCurrentURI()), "video/*");
+        context.startActivity(intent2);
     }
 
     @Override

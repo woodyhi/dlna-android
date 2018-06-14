@@ -65,7 +65,8 @@ public class LocalMediaRenderer {
     private LocalMediaRenderer(Context context) {
         this.context = context;
         try {
-            createLocalDevice();
+//            createLocalDevice();
+            localDevice = createDevice();
         } catch (ValidationException e) {
             e.printStackTrace();
         } catch (Exception e) {

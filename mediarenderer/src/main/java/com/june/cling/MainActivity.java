@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
                 ZxtMediaRenderer mediaRenderer = new ZxtMediaRenderer(1,
                         MainActivity.this);
                 upnpService.getRegistry().addDevice(mediaRenderer.getDevice());
-                upnpService.getRegistry().addDevice(mediaRenderer.getDevice());
             }
 
             @Override

@@ -14,12 +14,14 @@ import org.fourthline.cling.android.AndroidUpnpServiceImpl;
 import org.fourthline.cling.model.meta.Device;
 import org.fourthline.cling.model.meta.LocalDevice;
 import org.fourthline.cling.model.meta.RemoteDevice;
+import org.fourthline.cling.model.meta.RemoteService;
 import org.fourthline.cling.model.meta.Service;
 import org.fourthline.cling.model.types.UDAServiceType;
 import org.fourthline.cling.registry.DefaultRegistryListener;
 import org.fourthline.cling.registry.Registry;
 import org.fourthline.cling.registry.RegistryListener;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -203,13 +205,34 @@ public class UpnpComponent {
 
 		@Override
 		public void deviceAdded(Registry registry, final Device device) {
-			Log.d("-----deviceAdded", "\n" + device.getDisplayString()
+			Log.d("------deviceAdded", "\n" + device.getDisplayString()
 					+ "\n" + device.getDetails().getFriendlyName() // 用这个名字显示设备
 					+ "\n" + device.getDetails().getSerialNumber()
 					+ "\n" + device.getDetails().getBaseURL()
 					+ "\n" + device.getDetails().getModelDetails().getModelName()
 					+ "\n" + device.getType()
-					+ "\n" + device.getType().getType());
+					+ "\n" + device.getType().getType()
+					+ "\n" + device.getDetails().getManufacturerDetails().getManufacturerURI()
+					+ "\n" + device.getDetails().getModelDetails().getModelURI()
+					+ "\n" + device.getDetails().getPresentationURI()
+			);
+
+			Service[] services = device.getServices();
+			for(Service service: services) {
+				Log.e("===get ", service.getServiceType().getType());
+			}
+			services = device.findServices();
+			for(Service service: services){
+				Log.e("===find ", service.getServiceType().getType());
+			}
+			final Service service = device.findService(new UDAServiceType("AVTransport"));
+			if(service instanceof RemoteService){
+				RemoteService remoteService = (RemoteService)service;
+
+				// Figure out the remote URL where we'd like to send the action request to
+				URL controLURL = remoteService.getDevice().normalizeURI(remoteService.getControlURI());
+				Log.e("===add", controLURL.toString());
+			}
 
 			Service localService = device.findService(new UDAServiceType("AVTransport"));
 			if (localService != null) {

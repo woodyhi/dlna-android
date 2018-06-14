@@ -61,7 +61,6 @@ public class DlnaBrowserActivity extends AppCompatActivity {
 
         upnpComponent = UpnpComponent.getsInstance();
         upnpComponent.init(getApplicationContext());
-        upnpComponent.addRegistryListener(new MediaRendererListener());
         upnpComponent.addRegistryListener(new MediaServerListener());
         upnpComponent.start();
 
@@ -124,7 +123,7 @@ public class DlnaBrowserActivity extends AppCompatActivity {
         ((DeviceAdapter) listView.getAdapter()).clear();
         if (upnpComponent.getAndroidUpnpService() != null) {
             upnpComponent.getAndroidUpnpService().getRegistry().removeAllRemoteDevices();
-            for(Device d : upnpComponent.getAndroidUpnpService().getRegistry().getDevices()){
+            for (Device d : upnpComponent.getAndroidUpnpService().getRegistry().getDevices()) {
                 ((DeviceAdapter) listView.getAdapter()).add(d);
             }
             upnpComponent.getAndroidUpnpService().getControlPoint().search();
@@ -133,9 +132,11 @@ public class DlnaBrowserActivity extends AppCompatActivity {
 
     protected class MediaServerListener extends DefaultRegistryListener {
 
+
         @Override
         public void deviceAdded(Registry registry, final Device device) {
-            if ("MediaServer".equals(device.getType().getType())) {
+            if ("MediaServer".equals(device.getType().getType())
+                    || "MediaRenderer".equals(device.getType().getType())) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -147,7 +148,8 @@ public class DlnaBrowserActivity extends AppCompatActivity {
 
         @Override
         public void deviceRemoved(Registry registry, final Device device) {
-            if ("MediaServer".equals(device.getType().getType())) {
+            if ("MediaServer".equals(device.getType().getType())
+                    || "MediaRenderer".equals(device.getType().getType())) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -158,61 +160,6 @@ public class DlnaBrowserActivity extends AppCompatActivity {
         }
     }
 
-    protected class MediaRendererListener extends DefaultRegistryListener {
-
-        @Override
-        public void deviceAdded(Registry registry, final Device device) {
-            if ("MediaRenderer".equals(device.getType().getType())) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ((DeviceAdapter) listView.getAdapter()).add(device);
-                    }
-                });
-            }
-        }
-
-        @Override
-        public void deviceRemoved(Registry registry, final Device device) {
-            if ("MediaRenderer".equals(device.getType().getType())) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ((DeviceAdapter) listView.getAdapter()).remove(device);
-                    }
-                });
-            }
-        }
-    }
-
-    protected class BrowseRegistryListener extends DefaultRegistryListener {
-
-        @Override
-        public void deviceAdded(Registry registry, final Device device) {
-            Log.d("----------deviceAdded", "\n" + device.getDisplayString()
-                    + "\n" + device.getDetails().getFriendlyName() // 用这个名字显示设备
-                    + "\n" + device.getDetails().getSerialNumber()
-                    + "\n" + device.getDetails().getBaseURL()
-                    + "\n" + device.getDetails().getModelDetails().getModelName()
-                    + "\n" + device.getType()
-                    + "\n" + device.getType().getType());
-        }
-
-        @Override
-        public void deviceRemoved(Registry registry, final Device device) {
-        }
-    }
-
-
-
-
-    //        if (localService != null) {
-    //            Log.e("start play", "start play");
-    //            this.upnpService.getControlPoint().execute(
-    //                    new PlayerCallback(localService, mHandle));
-    //        } else {
-    //            Log.e("null", "null");
-    //        }
 
     //    private void ma(){
     //        // Use cling factory
@@ -232,7 +179,6 @@ public class DlnaBrowserActivity extends AppCompatActivity {
     //            public void success(ActionInvocation invocation)
     //            {
     //                Log.v(TAG, "Success playing ! ");
-    //                // TODO update player state
     //            }
     //
     //            @Override
@@ -241,14 +187,5 @@ public class DlnaBrowserActivity extends AppCompatActivity {
     //                Log.w(TAG, "Fail to play ! " + arg2);
     //            }
     //        });
-    //    }
-    //
-    //    public static Service getAVTransportService()
-    //    {
-    //        if (Main.upnpServiceController.getSelectedRenderer() == null)
-    //            return null;
-    //
-    //        return ((CDevice) Main.upnpServiceController.getSelectedRenderer()).getDevice().findService(
-    //                new UDAServiceType("AVTransport"));
     //    }
 }
