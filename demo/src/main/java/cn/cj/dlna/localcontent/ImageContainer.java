@@ -31,7 +31,7 @@ import org.seamless.util.MimeType;
 
 import java.util.List;
 
-import cn.cj.dlna.dmc.ContentDirectoryService;
+import cn.cj.dlna.dms.ContentDirectoryService;
 
 public class ImageContainer extends DynamicContainer
 {

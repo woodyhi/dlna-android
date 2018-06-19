@@ -8,7 +8,6 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
-import org.fourthline.cling.UpnpService;
 import org.fourthline.cling.android.AndroidUpnpService;
 import org.fourthline.cling.android.AndroidUpnpServiceImpl;
 import org.fourthline.cling.model.meta.Device;
@@ -28,7 +27,6 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import cn.cj.dlna.dmc.LocalMediaServer;
 import cn.cj.dlna.dmr.LocalMediaRenderer;
 
 /**

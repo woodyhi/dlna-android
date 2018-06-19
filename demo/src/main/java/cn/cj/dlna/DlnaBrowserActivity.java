@@ -3,7 +3,6 @@ package cn.cj.dlna;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,7 +10,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import org.fourthline.cling.UpnpService;
 import org.fourthline.cling.android.AndroidUpnpService;
 import org.fourthline.cling.android.FixedAndroidLogHandler;
 import org.fourthline.cling.model.meta.Device;
@@ -24,9 +22,8 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import cn.cj.dlna.component.DMCController;
+import cn.cj.dlna.dmc.DMCController;
 import cn.cj.dlna.component.UpnpComponent;
-import cn.cj.dlna.dmr.LocalMediaRenderer;
 
 public class DlnaBrowserActivity extends AppCompatActivity {
 

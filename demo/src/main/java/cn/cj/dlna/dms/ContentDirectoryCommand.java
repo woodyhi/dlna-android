@@ -1,4 +1,4 @@
-package cn.cj.dlna.dmc;
+package cn.cj.dlna.dms;
 
 import org.fourthline.cling.UpnpService;
 import org.fourthline.cling.android.AndroidUpnpService;

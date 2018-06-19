@@ -22,7 +22,7 @@ package cn.cj.dlna.localcontent;
 import org.fourthline.cling.support.model.WriteStatus;
 import org.fourthline.cling.support.model.container.Container;
 
-import cn.cj.dlna.dmc.ContentDirectoryService;
+import cn.cj.dlna.dms.ContentDirectoryService;
 
 public class CustomContainer extends Container
 {

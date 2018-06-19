@@ -7,7 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import cn.cj.dlna.dmc.LocalMediaServer;
+import cn.cj.dlna.dms.LocalMediaServer;
 import cn.cj.dlna.util.NetworkUtil;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {

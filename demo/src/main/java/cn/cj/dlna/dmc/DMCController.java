@@ -1,4 +1,4 @@
-package cn.cj.dlna.component;
+package cn.cj.dlna.dmc;
 
 
 import org.eclipse.jetty.util.UrlEncoded;

@@ -1,4 +1,4 @@
-package cn.cj.dlna.dmc;
+package cn.cj.dlna.dms;
 
 import android.content.Context;
 import android.content.SharedPreferences;

@@ -1,19 +1,16 @@
 package cn.cj.dlna;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.widget.ListView;
 
 import org.fourthline.cling.android.AndroidUpnpService;
 import org.fourthline.cling.model.meta.LocalDevice;
 
 import cn.cj.dlna.component.UpnpComponent;
-import cn.cj.dlna.dmc.ContentDirectoryCommand;
-import cn.cj.dlna.dmc.LocalMediaServer;
+import cn.cj.dlna.dms.ContentDirectoryCommand;
+import cn.cj.dlna.dms.LocalMediaServer;
 
 public class LocalContentDirectoryActivity extends AppCompatActivity {
 	private ListView listView;
