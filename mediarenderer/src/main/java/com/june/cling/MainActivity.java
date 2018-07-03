@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
 
         upnpComponent = UpnpComponent.getsInstance();
         upnpComponent.init(getApplicationContext());
-        upnpComponent.setConnectionCallback(new UpnpComponent.ConnectionCallback() {
+        upnpComponent.setConnectionCallback(new UpnpComponent.ServiceConnectCallback() {
             @Override
             public void onConnected(AndroidUpnpService upnpService) {
                 ZxtMediaRenderer mediaRenderer = new ZxtMediaRenderer(1,
