@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import cn.cj.dlna.dmc.DMCController;
 import cn.cj.dlna.component.UpnpComponent;
+import cn.cj.dlna.dmc.DMCController;
 
 public class DlnaBrowserActivity extends AppCompatActivity {
 
@@ -58,7 +58,7 @@ public class DlnaBrowserActivity extends AppCompatActivity {
 
         upnpComponent = UpnpComponent.getsInstance();
         upnpComponent.init(getApplicationContext());
-        upnpComponent.addRegistryListener(new MediaServerListener());
+        upnpComponent.addRegistryListener(registryListener);
         upnpComponent.start();
 
     }
@@ -127,7 +127,7 @@ public class DlnaBrowserActivity extends AppCompatActivity {
         }
     }
 
-    protected class MediaServerListener extends DefaultRegistryListener {
+    protected DefaultRegistryListener registryListener = new DefaultRegistryListener() {
 
 
         @Override
@@ -155,7 +155,7 @@ public class DlnaBrowserActivity extends AppCompatActivity {
                 });
             }
         }
-    }
+    };
 
 
     //    private void ma(){

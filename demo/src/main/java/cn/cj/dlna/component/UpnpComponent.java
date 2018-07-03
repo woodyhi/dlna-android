@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.fourthline.cling.android.AndroidUpnpService;
 import org.fourthline.cling.android.AndroidUpnpServiceImpl;
@@ -49,7 +48,7 @@ public class UpnpComponent {
 
 	private Vector<DefaultRegistryListener> registries = new Vector<>();
 
-	private ConnectionCallback connectionCallback;
+	private ServiceConnectCallback connectCallback;
 
 	private ServiceConnection serviceConnection = new ServiceConnection() {
 
@@ -70,14 +69,14 @@ public class UpnpComponent {
 			// Search asynchronously for all devices, they will respond soon
 			upnpService.getControlPoint().search();
 
-			if(connectionCallback != null){
-				connectionCallback.onConnected(upnpService);
+			if(connectCallback != null){
+				connectCallback.onConnected(upnpService);
 			}
 		}
 
 		public void onServiceDisconnected(ComponentName className) {
 			upnpService = null;
-			connectionCallback.onDisconnected();
+			connectCallback.onDisconnected();
 		}
 	};
 
@@ -120,8 +119,8 @@ public class UpnpComponent {
 		registries.remove(listener);
 	}
 
-	public void setConnectionCallback(ConnectionCallback connectionCallback) {
-		this.connectionCallback = connectionCallback;
+	public void setConnectionCallback(ServiceConnectCallback connectionCallback) {
+		this.connectCallback = connectionCallback;
 	}
 
 	protected class InternalRegistryListener extends DefaultRegistryListener {
@@ -130,7 +129,7 @@ public class UpnpComponent {
 		@Override
 		public void remoteDeviceDiscoveryStarted(Registry registry, RemoteDevice device) {
 				super.remoteDeviceDiscoveryStarted(registry, device);
-				logger.log(Level.INFO, "************* remoteDeviceDiscoveryStarted");
+				logger.log(Level.INFO, "****** remoteDeviceDiscoveryStarted " + device.getDetails().getFriendlyName());
 				if(!registries.isEmpty()){
 					for(RegistryListener listener : registries){
 						listener.remoteDeviceDiscoveryStarted(registry, device);
@@ -141,68 +140,68 @@ public class UpnpComponent {
 		@Override
 		public void remoteDeviceDiscoveryFailed(Registry registry, final RemoteDevice device, final Exception ex) {
 			super.remoteDeviceDiscoveryFailed(registry, device, ex);
-			logger.log(Level.INFO, "************* remoteDeviceDiscoveryFailed");
-
+			logger.log(Level.INFO, "****** remoteDeviceDiscoveryFailed " + device.getDetails().getFriendlyName());
 			if(!registries.isEmpty()){
 				for(RegistryListener listener : registries){
 					listener.remoteDeviceDiscoveryFailed(registry, device, ex);
 				}
 			}
-			Toast.makeText(
-					context,
-					"Discovery failed of '" + device.getDisplayString() + "': "
-							+ (ex != null ? ex.toString() : "Couldn't retrieve device/service descriptors"),
-					Toast.LENGTH_LONG
-			).show();
+//			Toast.makeText(
+//					context,
+//					"Discovery failed of '" + device.getDisplayString() + "': "
+//							+ (ex != null ? ex.toString() : "Couldn't retrieve device/service descriptors"),
+//					Toast.LENGTH_LONG
+//			).show();
 		}
 		/* End of optimization, you can remove the whole block if your Android handset is fast (>= 600 Mhz) */
 
 		@Override
 		public void remoteDeviceAdded(Registry registry, RemoteDevice device) {
+			logger.log(Level.INFO, "****** remoteDeviceAdded " + device.getDetails().getFriendlyName());
 			super.remoteDeviceAdded(registry, device);
-			logger.log(Level.INFO, "----- remoteDeviceAdded");
-			if(!registries.isEmpty()){
-				for(RegistryListener listener : registries){
-					listener.remoteDeviceAdded(registry, device);
-				}
-			}
+//			if(!registries.isEmpty()){
+//				for(RegistryListener listener : registries){
+//					listener.remoteDeviceAdded(registry, device);
+//				}
+//			}
 		}
 
 		@Override
 		public void remoteDeviceRemoved(Registry registry, RemoteDevice device) {
+			logger.log(Level.INFO, "****** remoteDeviceRemoved " + device.getDetails().getFriendlyName());
 			super.remoteDeviceRemoved(registry, device);
-			logger.log(Level.INFO, "----- remoteDeviceRemoved");
-			if(!registries.isEmpty()){
-				for(RegistryListener listener : registries){
-					listener.remoteDeviceRemoved(registry, device);
-				}
-			}
+//			if(!registries.isEmpty()){
+//				for(RegistryListener listener : registries){
+//					listener.remoteDeviceRemoved(registry, device);
+//				}
+//			}
 		}
 
 		@Override
 		public void localDeviceAdded(Registry registry, LocalDevice device) {
+			logger.log(Level.INFO, "****** localDeviceAdded " + device.getDetails().getFriendlyName());
 			super.localDeviceAdded(registry, device);
-			logger.log(Level.INFO, "----- localDeviceAdded");
-			if(!registries.isEmpty()){
-				for(RegistryListener listener : registries){
-					listener.localDeviceAdded(registry, device);
-				}
-			}
+//			if(!registries.isEmpty()){
+//				for(RegistryListener listener : registries){
+//					listener.localDeviceAdded(registry, device);
+//				}
+//			}
 		}
 
 		@Override
 		public void localDeviceRemoved(Registry registry, LocalDevice device) {
+			logger.log(Level.INFO, "****** localDeviceRemoved " + device.getDetails().getFriendlyName());
 			super.localDeviceRemoved(registry, device);
-			logger.log(Level.INFO, "----- localDeviceRemoved");
-			if(!registries.isEmpty()){
-				for(RegistryListener listener : registries){
-					listener.localDeviceRemoved(registry, device);
-				}
-			}
+//			if(!registries.isEmpty()){
+//				for(RegistryListener listener : registries){
+//					listener.localDeviceRemoved(registry, device);
+//				}
+//			}
 		}
 
 		@Override
 		public void deviceAdded(Registry registry, final Device device) {
+			Log.d("---", "---deviceAdded " + device.getDetails().getFriendlyName());
 			Log.d("------deviceAdded", "\n" + device.getDisplayString()
 					+ "\n" + device.getDetails().getFriendlyName() // 用这个名字显示设备
 					+ "\n" + device.getDetails().getSerialNumber()
@@ -215,36 +214,33 @@ public class UpnpComponent {
 					+ "\n" + device.getDetails().getPresentationURI()
 			);
 
-			Service[] services = device.getServices();
-			for(Service service: services) {
-				Log.e("===get ", service.getServiceType().getType());
-			}
-			services = device.findServices();
+			Service[] services = device.findServices();
+			String s = "";
 			for(Service service: services){
-				Log.e("===find ", service.getServiceType().getType());
+				s += " " + service.getServiceType().getType();
 			}
+			Log.e("---found Services", s);
+
 			final Service service = device.findService(new UDAServiceType("AVTransport"));
 			if(service instanceof RemoteService){
 				RemoteService remoteService = (RemoteService)service;
 
 				// Figure out the remote URL where we'd like to send the action request to
 				URL controLURL = remoteService.getDevice().normalizeURI(remoteService.getControlURI());
-				Log.e("===add", controLURL.toString());
+				Log.e("---AVTransport", controLURL.toString());
 			}
 
-			Service localService = device.findService(new UDAServiceType("AVTransport"));
-			if (localService != null) {
-			}
 
 			if(!registries.isEmpty()){
 				for(DefaultRegistryListener listener : registries){
-					listener.deviceRemoved(registry, device);
+					listener.deviceAdded(registry, device);
 				}
 			}
 		}
 
 		@Override
 		public void deviceRemoved(Registry registry, final Device device) {
+			Log.d("---", "deviceRemoved " + device.getDetails().getFriendlyName());
 			if(!registries.isEmpty()){
 				for(DefaultRegistryListener listener : registries){
 					listener.deviceRemoved(registry, device);
@@ -253,7 +249,7 @@ public class UpnpComponent {
 		}
 	}
 
-	public interface ConnectionCallback{
+	public interface ServiceConnectCallback {
 		void onConnected(AndroidUpnpService upnpService);
 		void onDisconnected();
 	}

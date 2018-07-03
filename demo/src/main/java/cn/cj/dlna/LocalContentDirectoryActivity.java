@@ -29,7 +29,7 @@ public class LocalContentDirectoryActivity extends AppCompatActivity {
 		upnpComponent = UpnpComponent.getsInstance();
 		upnpComponent.init(this);
 
-		upnpComponent.setConnectionCallback(new UpnpComponent.ConnectionCallback() {
+		upnpComponent.setConnectionCallback(new UpnpComponent.ServiceConnectCallback() {
             @Override
             public void onConnected(AndroidUpnpService upnpService) {
                 browseLocalDevice();
