@@ -1,5 +1,6 @@
 package cn.cj.dlna;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -27,6 +28,8 @@ import cn.cj.dlna.dmc.DMCController;
 
 public class DlnaBrowserActivity extends AppCompatActivity {
 
+    public static Device selectedDmrDevice;
+
     private ListView listView;
 
     private UpnpComponent upnpComponent;
@@ -44,8 +47,9 @@ public class DlnaBrowserActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Device device = (Device) parent.getItemAtPosition(position);
-
-                new DMCController().setAVTransport(upnpComponent.getAndroidUpnpService(), device, MainActivity.PLAYURL);
+                selectedDmrDevice = device;
+                startActivity(new Intent(getApplicationContext(), MediaRendererControlActivity.class));
+//                new DMCController().setAVTransport(upnpComponent.getAndroidUpnpService(), device, MainActivity.PLAYURL);
             }
         });
 

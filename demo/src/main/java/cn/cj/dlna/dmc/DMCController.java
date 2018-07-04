@@ -13,6 +13,7 @@ import org.fourthline.cling.model.types.InvalidValueException;
 import org.fourthline.cling.model.types.UDAServiceType;
 import org.fourthline.cling.support.avtransport.callback.Play;
 import org.fourthline.cling.support.avtransport.callback.SetAVTransportURI;
+import org.fourthline.cling.support.avtransport.callback.Stop;
 import org.fourthline.cling.support.contentdirectory.callback.Browse;
 import org.fourthline.cling.support.model.BrowseFlag;
 import org.fourthline.cling.support.model.DIDLContent;
@@ -121,6 +122,17 @@ public class DMCController {
             }
         };
         upnpService.getControlPoint().execute(playa);
+    }
+
+    public void stop(AndroidUpnpService upnpService, Device device) {
+        final Service service = device.findService(new UDAServiceType("AVTransport"));
+        Stop stop = new Stop(service) {
+            @Override
+            public void failure(ActionInvocation actionInvocation, UpnpResponse upnpResponse, String s) {
+                System.out.println("stop fail");
+            }
+        };
+        upnpService.getControlPoint().execute(stop);
     }
 
     public void executeAction(UpnpService upnpService, Service service) {
