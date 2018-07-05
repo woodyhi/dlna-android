@@ -24,7 +24,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import cn.cj.dlna.component.UpnpComponent;
-import cn.cj.dlna.dmc.DMCController;
 
 public class DlnaBrowserActivity extends AppCompatActivity {
 
@@ -49,7 +48,6 @@ public class DlnaBrowserActivity extends AppCompatActivity {
                 Device device = (Device) parent.getItemAtPosition(position);
                 selectedDmrDevice = device;
                 startActivity(new Intent(getApplicationContext(), MediaRendererControlActivity.class));
-//                new DMCController().setAVTransport(upnpComponent.getAndroidUpnpService(), device, MainActivity.PLAYURL);
             }
         });
 

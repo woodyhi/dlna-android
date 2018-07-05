@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="cn.cj.dlna.DlnaBrowserActivity"
-    tools:showIn="@layout/activity_dlna_browser">
+    tools:context="cn.cj.dlna.DlnaBrowserActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

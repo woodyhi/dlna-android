@@ -1,7 +1,6 @@
 package cn.cj.dlna.dmc;
 
 
-import org.eclipse.jetty.util.UrlEncoded;
 import org.fourthline.cling.UpnpService;
 import org.fourthline.cling.android.AndroidUpnpService;
 import org.fourthline.cling.controlpoint.ActionCallback;
@@ -14,18 +13,6 @@ import org.fourthline.cling.model.types.UDAServiceType;
 import org.fourthline.cling.support.avtransport.callback.Play;
 import org.fourthline.cling.support.avtransport.callback.SetAVTransportURI;
 import org.fourthline.cling.support.avtransport.callback.Stop;
-import org.fourthline.cling.support.contentdirectory.callback.Browse;
-import org.fourthline.cling.support.model.BrowseFlag;
-import org.fourthline.cling.support.model.DIDLContent;
-import org.fourthline.cling.support.model.ProtocolInfo;
-import org.fourthline.cling.support.model.Res;
-import org.fourthline.cling.support.model.SortCriterion;
-import org.fourthline.cling.support.model.item.VideoItem;
-
-import java.net.URI;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
 
 import cn.cj.dlna.MainActivity;
 import cn.cj.dlna.a.TrackMetadata;
@@ -35,32 +22,6 @@ import cn.cj.dlna.a.TrackMetadata;
  */
 
 public class DMCController {
-
-    public void contentDirectory(final AndroidUpnpService upnpService, final Device device) {
-        Service service = device.findService(new UDAServiceType("ContentDirectory"));
-        ActionCallback actionCallback = new Browse(service, "0", BrowseFlag.DIRECT_CHILDREN, "*", 0,
-                null, new SortCriterion(true, "dc:title")) {
-            @Override
-            public void received(ActionInvocation actionInvocation, DIDLContent didlContent) {
-                try {
-                    System.out.println("=======contentDirectory=====success===" + didlContent.getContainers().get(0).getTitle());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void updateStatus(Status status) {
-
-            }
-
-            @Override
-            public void failure(ActionInvocation actionInvocation, UpnpResponse upnpResponse, String s) {
-                System.out.println("======contentDirectory======fail===" + s);
-            }
-        };
-        upnpService.getControlPoint().execute(actionCallback);
-    }
 
     public void setAVTransport(final AndroidUpnpService upnpService, final Device device, String uri) {
         try {

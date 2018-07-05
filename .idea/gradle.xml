@@ -10,8 +10,9 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/demo" />
-            <option value="$PROJECT_DIR$/lib-cling" />
-            <option value="$PROJECT_DIR$/lib-cling-android" />
+            <option value="$PROJECT_DIR$/dmc" />
+            <option value="$PROJECT_DIR$/dmr" />
+            <option value="$PROJECT_DIR$/libcling4android" />
             <option value="$PROJECT_DIR$/mediaplayer" />
             <option value="$PROJECT_DIR$/mediarenderer" />
           </set>

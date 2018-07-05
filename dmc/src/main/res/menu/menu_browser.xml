@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools">
+
+    <item
+        android:id="@+id/action_search"
+        android:orderInCategory="100"
+        android:title="搜索"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_toggle_net"
+        android:orderInCategory="100"
+        android:title="网络开关"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_toggle_log"
+        android:orderInCategory="100"
+        android:title="调试日志开关"
+        app:showAsAction="never"/>
+</menu>
