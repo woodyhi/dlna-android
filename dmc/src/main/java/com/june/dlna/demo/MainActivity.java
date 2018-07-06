@@ -61,9 +61,6 @@ public class MainActivity extends AppCompatActivity {
         upnpComponent.addRegistryListener(registryListener);
         upnpComponent.start();
 
-        int[] position = new int[2];
-        listView.getLocationInWindow(position);
-        System.out.println("++++++++++++++++++++++++ list view " + position[0] + " " + position[1]);
     }
 
     @Override
@@ -74,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        System.out.println(" click +++++++++++++++++++++++++++");
         int id = item.getItemId();
         switch (id) {
             case R.id.action_search:
