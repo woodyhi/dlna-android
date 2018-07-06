@@ -75,8 +75,8 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_gravity="center"
-			android:src="@drawable/center_pause"
-			android:visibility="visible"/>
+			android:src="@drawable/center_play"
+			android:visibility="gone"/>
 
 		<LinearLayout
 			android:id="@+id/player_bottom_bar"

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -13,6 +14,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.media.player.DlnaRendererReceiver;
 import com.android.media.player.video.fragment.VideoPlayerFragment;
 import com.media.player.ott.R;
 
@@ -32,6 +34,7 @@ public class VideoPlayerActivity extends BaseFragmentActivity {
 	private long 				mPlayedTime;
 	private int				mVideoType; // 1：点播 2：回看 3：直播
 
+    private DlnaRendererReceiver dlnaRendererReceiver;
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
@@ -39,7 +42,17 @@ public class VideoPlayerActivity extends BaseFragmentActivity {
 		initView();
 		initFragment();
 		parseIntent(getIntent());
-//		registerNetworkReceiver();
+
+		dlnaRendererReceiver = new DlnaRendererReceiver(new DlnaRendererReceiver.Callback() {
+            @Override
+            public void stop() {
+                finish();
+            }
+        });
+
+		IntentFilter intentFilter = new IntentFilter();
+		intentFilter.addAction(DlnaRendererReceiver.DMR);
+		registerReceiver(dlnaRendererReceiver, intentFilter);
 	}
 
 	@Override
@@ -47,7 +60,7 @@ public class VideoPlayerActivity extends BaseFragmentActivity {
 		parseIntent(intent);
 		super.onNewIntent(intent);
 	}
-	
+
 	private void parseIntent(Intent intent) {
 		String action = intent.getAction();
 		if (Intent.ACTION_VIEW.equals(action)) {
@@ -58,23 +71,23 @@ public class VideoPlayerActivity extends BaseFragmentActivity {
 			String path = intent.getDataString();
 			if(path != null){
 				mMediaPath = path;
-				
+
 			}else{
 				Bundle bundle = intent.getExtras();
 				if(bundle != null){
 					mMediaPath = bundle.getString("playurl", null);
-					mPlayedTime = bundle.getLong("playedtime", 0);	
+					mPlayedTime = bundle.getLong("playedtime", 0);
 					mVideoType = bundle.getInt("videoType", 1);
 				}
 			}
-			
+
 			Log.d(TAG, "url path -> " + path + ", playedtime=" + mPlayedTime + "(ms)");
 		}
-		
+
 		readyPlayVideo(mMediaPath, mPlayedTime, mVideoType);
 	}
-	
-	
+
+
 	private void readyPlayVideo(String url, long seek, int videoType){
 		mMediaPlayerFragment.play(url, (int) seek, videoType);
 	}
@@ -116,9 +129,9 @@ public class VideoPlayerActivity extends BaseFragmentActivity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-//		unregisterNetworkReceiver();
+        unregisterReceiver(dlnaRendererReceiver);
 	}
-	
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         Log.d(TAG, " onKeyDown event--------------- " + event.getRepeatCount());
@@ -158,4 +171,5 @@ public class VideoPlayerActivity extends BaseFragmentActivity {
 				}).setNegativeButton("取消",null)
                 .show();
 	}
+
 }

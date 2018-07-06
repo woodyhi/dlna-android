@@ -510,12 +510,12 @@ public class VideoPlayerFragment extends Fragment implements SurfaceHolder.Callb
 				mMediaPlayer.pause();
 				playingOnSurface = false;
 				playPauseBtn.setBackgroundResource(R.drawable.ic_media_play);
-				centerPlayPause.setVisibility(View.GONE);
+				centerPlayPause.setVisibility(View.VISIBLE);
 			} else {
 				mMediaPlayer.start();
 				playingOnSurface = true;
 				playPauseBtn.setBackgroundResource(R.drawable.ic_media_pause);
-				centerPlayPause.setVisibility(View.VISIBLE);
+				centerPlayPause.setVisibility(View.GONE);
 			}
 		}
 		showOverlay(true);
