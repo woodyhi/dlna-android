@@ -37,7 +37,6 @@ public class PlayerMainActivity extends Activity {
 		});
 
 		String purl = "http://download.blender.org/peach/bigbuckbunny_movies/BigBuckBunny_640x360.m4v";
-//		String purl = "file:///sdcard/test.3gp";
 		editText.setText(purl);
 	}
 

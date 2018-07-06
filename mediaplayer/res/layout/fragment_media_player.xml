@@ -27,7 +27,7 @@
 			android:orientation="vertical">
 
 			<ProgressBar
-				android:id="@+id/progressbar"
+				android:id="@+id/progressbar_loading"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:indeterminateDrawable="@drawable/loading_a"
@@ -70,16 +70,23 @@
 				android:textSize="20sp" />
 		</LinearLayout>
 
+		<ImageView
+			android:id="@+id/center_play_pause"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:src="@drawable/center_pause"
+			android:visibility="visible"/>
+
 		<LinearLayout
 			android:id="@+id/player_bottom_bar"
 			android:layout_width="match_parent"
 			android:layout_height="70dp"
             android:padding="10dp"
 			android:layout_gravity="bottom"
-			android:background="#aa000000"
+			android:background="#bb000000"
 			android:gravity="center_vertical"
-			android:orientation="horizontal"
-			android:visibility="gone">
+			android:orientation="horizontal">
 
 			<ImageView
 				android:id="@+id/play_pause_btn"
@@ -89,7 +96,9 @@
 				android:scaleType="center"
 				android:focusable="true"
 				android:contentDescription="@null"
-				android:background="@drawable/ic_media_pause" />
+				android:background="@drawable/ic_media_pause"
+				android:visibility="gone"/>
+
 			<LinearLayout
 				android:id="@+id/seekbar_layout"
 				android:layout_width="0dp"
@@ -103,14 +112,24 @@
 					android:layout_marginLeft="10dp"
 					android:text="@string/player_media_default_time"
 					android:textColor="@color/player_time_color"
-					android:textSize="12sp" />
+					android:textSize="15sp" />
 
-				<SeekBar
-					android:id="@+id/seekbar"
-					style="@style/Widget.SeekBar.PlayerProgress"
+				<!--<SeekBar-->
+					<!--android:id="@+id/seekbar"-->
+					<!--style="@style/Widget.SeekBar.PlayerProgress"-->
+					<!--android:layout_width="0dp"-->
+					<!--android:layout_height="wrap_content"-->
+					<!--android:layout_weight="1" />-->
+
+				<ProgressBar
+					android:id="@+id/progress_playback"
 					android:layout_width="0dp"
-					android:layout_height="wrap_content"
-					android:layout_weight="1" />
+					android:layout_height="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+					style="?android:attr/progressBarStyleHorizontal"
+					android:progressDrawable="@drawable/playback_progressbar"
+					android:layout_weight="1"/>
 
 				<TextView
 					android:id="@+id/video_durationtime"
@@ -119,7 +138,7 @@
 					android:layout_marginRight="10dp"
 					android:text="@string/player_media_default_time"
 					android:textColor="@color/player_time_color"
-					android:textSize="12sp" />
+					android:textSize="15sp" />
 			</LinearLayout>
 			<ImageView
 				android:id="@+id/open_close_fullscreen"

@@ -104,9 +104,11 @@ public class VideoPlayerFragment extends Fragment implements SurfaceHolder.Callb
 	private LinearLayout				mPlayerBottomBar;
 	private boolean						mShowing;
 	private ImageView					playPauseBtn;
+	private ImageView					centerPlayPause;
 	private LinearLayout				mSeekBarLayout;
 	private TextView					mCurrentTime;
-	private SeekBar						mSeekBar;													// 进度
+//	private SeekBar						mSeekBar;													// 进度
+	private ProgressBar				mPlaybackProgressBar;
 	private TextView					mDurationTime;
 	private ImageView					openCloseFullscreenBtn;
 	private boolean						mSeeking						= false;
@@ -300,16 +302,18 @@ public class VideoPlayerFragment extends Fragment implements SurfaceHolder.Callb
 		mSurfaceViewParent = view.findViewById(R.id.surfaceview_parent);
 		mSurfaceView = (SurfaceView) view.findViewById(R.id.surfaceview);
 		mLoadingView = (LinearLayout) view.findViewById(R.id.loading_view);
-		mProgressBar = (ProgressBar) view.findViewById(R.id.progressbar);
+		mProgressBar = (ProgressBar) view.findViewById(R.id.progressbar_loading);
 		mVolumenLayout = (LinearLayout) view.findViewById(R.id.volume_layout);
 		mVolumePercent = (TextView) view.findViewById(R.id.volume_percent_tv);
 		mFastForwardProgressLayout = (LinearLayout) view.findViewById(R.id.fast_forward_progress_layout);
 		mFastForwardProgresText = (TextView) view.findViewById(R.id.fast_forward_progress_text);
 		mPlayerBottomBar = (LinearLayout) view.findViewById(R.id.player_bottom_bar);
 		playPauseBtn = (ImageView) view.findViewById(R.id.play_pause_btn);
+		centerPlayPause = view.findViewById(R.id.center_play_pause);
 		mSeekBarLayout = (LinearLayout) view.findViewById(R.id.seekbar_layout);
 		mCurrentTime = (TextView) view.findViewById(R.id.video_playtime);
-		mSeekBar = (SeekBar) view.findViewById(R.id.seekbar);
+//		mSeekBar = (SeekBar) view.findViewById(R.id.seekbar);
+		mPlaybackProgressBar = view.findViewById(R.id.progress_playback);
 		mDurationTime = (TextView) view.findViewById(R.id.video_durationtime);
 		openCloseFullscreenBtn = (ImageView) view.findViewById(R.id.open_close_fullscreen);
 
@@ -322,8 +326,8 @@ public class VideoPlayerFragment extends Fragment implements SurfaceHolder.Callb
 				playPausePlayer();
 			}
 		});
-		mSeekBar.setEnabled(false);
-		mSeekBar.setOnSeekBarChangeListener(new PlaybackSeekBarChangeListener());
+//		mSeekBar.setEnabled(false);
+//		mSeekBar.setOnSeekBarChangeListener(new PlaybackSeekBarChangeListener());
 		openCloseFullscreenBtn.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -387,7 +391,7 @@ public class VideoPlayerFragment extends Fragment implements SurfaceHolder.Callb
 				}
 				playingOnSurface = true;
 				playPauseBtn.setEnabled(true);
-				mSeekBar.setEnabled(true);
+//				mSeekBar.setEnabled(true);
 				showOverlay(true);
 			}
 		});
@@ -409,7 +413,8 @@ public class VideoPlayerFragment extends Fragment implements SurfaceHolder.Callb
 			@Override
 			public void onBufferingUpdate(MediaPlayer mp, int percent) {
 				Log.d(TAG, "mediaplayer buffered progress : " + percent + "%");
-				mSeekBar.setSecondaryProgress(mSeekBar.getMax() * percent / 100);
+//				mSeekBar.setSecondaryProgress(mSeekBar.getMax() * percent / 100);
+				mPlaybackProgressBar.setSecondaryProgress(mPlaybackProgressBar.getMax() * percent / 100);
 			}
 		});
 		mMediaPlayer.setOnSeekCompleteListener(new OnSeekCompleteListener() {
@@ -452,7 +457,7 @@ public class VideoPlayerFragment extends Fragment implements SurfaceHolder.Callb
 					Log.d(TAG, "info MEDIA_INFO_METADATA_UPDATE");
 					break;
 				case MediaPlayer.MEDIA_INFO_NOT_SEEKABLE:
-					mSeekBar.setEnabled(false);
+//					mSeekBar.setEnabled(false);
 					Log.d(TAG, "info MEDIA_INFO_NOT_SEEKABLE");
 					mSeekBarLayout.setVisibility(View.INVISIBLE);
 					break;
@@ -505,10 +510,12 @@ public class VideoPlayerFragment extends Fragment implements SurfaceHolder.Callb
 				mMediaPlayer.pause();
 				playingOnSurface = false;
 				playPauseBtn.setBackgroundResource(R.drawable.ic_media_play);
+				centerPlayPause.setVisibility(View.GONE);
 			} else {
 				mMediaPlayer.start();
 				playingOnSurface = true;
 				playPauseBtn.setBackgroundResource(R.drawable.ic_media_pause);
+				centerPlayPause.setVisibility(View.VISIBLE);
 			}
 		}
 		showOverlay(true);
@@ -670,9 +677,9 @@ public class VideoPlayerFragment extends Fragment implements SurfaceHolder.Callb
 
 	/** refresh playback progress */
 	private void refreshProgress() {
-		Log.e(TAG, "refresh progress ffffff");
+//		Log.e(TAG, "refresh progress ffffff");
 		if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
-			Log.e(TAG, "refresh progress xxxx");
+//			Log.e(TAG, "refresh progress xxxx");
 			duration = mMediaPlayer.getDuration();
 			int currentPosition = mMediaPlayer.getCurrentPosition();
 			lastPosition = currentPosition;
@@ -680,9 +687,9 @@ public class VideoPlayerFragment extends Fragment implements SurfaceHolder.Callb
 
 			if (duration > 0 && currentPosition <= duration) {
 				if (!mSeeking) {
-					Log.e(TAG, "vvvvvvvvvvvvvvvvvvvvvv");
-					mSeekBar.setMax(duration);
-					mSeekBar.setProgress(currentPosition);
+//					Log.e(TAG, "vvvvvvvvvvvvvvvvvvvvvv");
+					mPlaybackProgressBar.setMax(duration);
+					mPlaybackProgressBar.setProgress(currentPosition);
 				}
 
 				mCurrentTime.setText(MediaUtil.formatMillisTime(currentPosition));
@@ -715,7 +722,7 @@ public class VideoPlayerFragment extends Fragment implements SurfaceHolder.Callb
 											myHandler.sendMessageDelayed(m, 1000 - lastPosition % 1000);
 										}
 									} else {
-										Log.e(TAG, " cant refresh progress");
+										Log.e(TAG, " can't refresh progress");
 									}
 									break;
 								default:
@@ -828,12 +835,13 @@ public class VideoPlayerFragment extends Fragment implements SurfaceHolder.Callb
 		public boolean onDoubleTapEvent(MotionEvent e) {
 			Log.d(TAG, "onDoubleTapEvent " + e.getAction());
 			if (e.getAction() == MotionEvent.ACTION_UP) {
-				if (mCurrentSurfaceSize == SURFACESIZE_FIT_CENTER) {
-					mCurrentSurfaceSize = SURFACESIZE_CENTER_CROP;
-				} else {
-					mCurrentSurfaceSize = SURFACESIZE_FIT_CENTER;
-				}
-				changeSurfaceViewSize(mSurfaceView, mPlayerWidth, mPlayerHeight, mVideoWidth, mVideoHeight);
+//				if (mCurrentSurfaceSize == SURFACESIZE_FIT_CENTER) {
+//					mCurrentSurfaceSize = SURFACESIZE_CENTER_CROP;
+//				} else {
+//					mCurrentSurfaceSize = SURFACESIZE_FIT_CENTER;
+//				}
+//				changeSurfaceViewSize(mSurfaceView, mPlayerWidth, mPlayerHeight, mVideoWidth, mVideoHeight);
+				playPausePlayer();
 				return true;
 			}
 			return super.onDoubleTapEvent(e);
@@ -856,7 +864,7 @@ public class VideoPlayerFragment extends Fragment implements SurfaceHolder.Callb
 					gestureOrientaion = GESTURE_VERTICAL;
 					mVolumenLayout.setVisibility(View.VISIBLE);
 				} else if (Math.abs(X) - Math.abs(Y) > 1) {
-					Log.e(TAG, "xxxxxxxx" + (mSeekBar.isEnabled()));
+//					Log.e(TAG, "xxxxxxxx" + (mSeekBar.isEnabled()));
 					if (mSeekBarLayout.getVisibility() == View.VISIBLE) {
 						gestureOrientaion = GESTURE_HORIZONTAL;
 						mFastForwardProgressLayout.setVisibility(View.VISIBLE);
@@ -931,8 +939,6 @@ public class VideoPlayerFragment extends Fragment implements SurfaceHolder.Callb
 		}
 	}
 
-	
-	long tt;
 	
 	/** 前进or后退 **/
 	private void forwardOrRewind(int X){
