@@ -126,7 +126,7 @@ public class ZxtMediaRenderer {
                     new DeviceIdentity(udn),
                     new UDADeviceType("MediaRenderer", 1),
                     new DeviceDetails(
-                             "June Local Renderer" + " (" + android.os.Build.MODEL + ")",
+                             "MY设备" + " (" + android.os.Build.MODEL + ")",
                             new ManufacturerDetails(android.os.Build.MANUFACTURER),
                             new ModelDetails(
                                     "june dlna",

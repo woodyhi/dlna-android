@@ -1,3 +1,8 @@
-include ':app', ':libcling4android', ':mediarenderer', ':dmc', ':dmr'
+include ':app', ':libcling4android', ':mediarenderer'
 include ':demo'
 include ':mediaplayer'
+include ':cling'
+include ':cling:dmc'
+//project(':cling:dmc').projectDir = new File(rootDir, 'cling/dmc')
+include ':cling:dmr'
+

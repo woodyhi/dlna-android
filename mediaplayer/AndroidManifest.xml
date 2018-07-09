@@ -20,7 +20,7 @@
         android:label="@string/player_name"
         android:theme="@style/AppTheme">
 
-        <!-- &lt;!&ndash; -->
+         <!--
         <activity
             android:name="com.android.media.ui.PlayerMainActivity"
             android:label="@string/player_name">
@@ -30,7 +30,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <!-- &ndash;&gt; -->
+         -->
 
         <activity
             android:name="com.android.media.ui.VideoPlayerActivity"
