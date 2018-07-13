@@ -5,4 +5,5 @@ include ':cling'
 include ':cling:dmc'
 //project(':cling:dmc').projectDir = new File(rootDir, 'cling/dmc')
 include ':cling:dmr'
+include ':cling:gst'
 
