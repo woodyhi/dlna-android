@@ -16,6 +16,7 @@ public class MediaRendererControlActivity extends AppCompatActivity implements V
 
     private TextView dmrName;
     private Button transfer;
+    private Button play;
     private Button pause;
     private Button stop;
 
@@ -27,6 +28,8 @@ public class MediaRendererControlActivity extends AppCompatActivity implements V
         setContentView(R.layout.activity_media_renderer_control);
         dmrName = findViewById(R.id.dmr_device_name);
         transfer = findViewById(R.id.transfer);
+        play = findViewById(R.id.play);
+        pause = findViewById(R.id.pause);
         stop = findViewById(R.id.stop);
 
 //        dmrName.setText(selectedDevice.getDetails().getFriendlyName());
@@ -34,6 +37,8 @@ public class MediaRendererControlActivity extends AppCompatActivity implements V
         setTitle(selectedDevice.getDetails().getFriendlyName());
 
         transfer.setOnClickListener(this);
+        play.setOnClickListener(this);
+        pause.setOnClickListener(this);
         stop.setOnClickListener(this);
 
         upnpComponent = UpnpComponent.getsInstance();
@@ -48,6 +53,12 @@ public class MediaRendererControlActivity extends AppCompatActivity implements V
             case R.id.transfer:
                 String playurl = "http://devimages.apple.com/iphone/samples/bipbop/bipbopall.m3u8";
                 new DMCController().setAVTransport(upnpComponent.getAndroidUpnpService(), selectedDevice, playurl);
+                break;
+            case R.id.play:
+                new DMCController().play(upnpComponent.getAndroidUpnpService(), selectedDevice);
+                break;
+            case R.id.pause:
+                new DMCController().pause(upnpComponent.getAndroidUpnpService(), selectedDevice);
                 break;
             case R.id.stop:
                 new DMCController().stop(upnpComponent.getAndroidUpnpService(), selectedDevice);

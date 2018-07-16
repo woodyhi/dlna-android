@@ -10,6 +10,7 @@ import org.fourthline.cling.model.message.UpnpResponse;
 import org.fourthline.cling.model.meta.Device;
 import org.fourthline.cling.model.meta.Service;
 import org.fourthline.cling.model.types.UDAServiceType;
+import org.fourthline.cling.support.avtransport.callback.Pause;
 import org.fourthline.cling.support.avtransport.callback.Play;
 import org.fourthline.cling.support.avtransport.callback.SetAVTransportURI;
 import org.fourthline.cling.support.avtransport.callback.Stop;
@@ -52,7 +53,7 @@ public class DMCController {
                 public void success(@SuppressWarnings("rawtypes") ActionInvocation invocation) {
                     super.success(invocation);
                     System.out.println("设置URL成功");
-                    play(upnpService, service);
+                    play(upnpService, device);
                 }
 
                 public void failure(@SuppressWarnings("rawtypes") ActionInvocation invocation, UpnpResponse operation, String defaultMsg) {
@@ -66,7 +67,8 @@ public class DMCController {
     }
 
 
-    public void play(AndroidUpnpService upnpService, Service service) {
+    public void play(AndroidUpnpService upnpService, Device device) {
+        final Service service = device.findService(new UDAServiceType("AVTransport"));
         ActionCallback playa = new Play(service) {
             @Override
             public void success(ActionInvocation invocation) {
@@ -81,6 +83,17 @@ public class DMCController {
             }
         };
         upnpService.getControlPoint().execute(playa);
+    }
+
+    public void pause(AndroidUpnpService upnpService, Device device) {
+        final Service service = device.findService(new UDAServiceType("AVTransport"));
+        ActionCallback pauseA = new Pause(service) {
+            @Override
+            public void failure(ActionInvocation actionInvocation, UpnpResponse upnpResponse, String s) {
+                System.out.println("暂停失败 " + s);
+            }
+        };
+        upnpService.getControlPoint().execute(pauseA);
     }
 
     public void stop(AndroidUpnpService upnpService, Device device) {

@@ -15,8 +15,8 @@
             <option value="$PROJECT_DIR$/cling/gst" />
             <option value="$PROJECT_DIR$/demo" />
             <option value="$PROJECT_DIR$/libcling4android" />
-            <option value="$PROJECT_DIR$/mediaplayer" />
             <option value="$PROJECT_DIR$/mediarenderer" />
+            <option value="$PROJECT_DIR$/tvplayer" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

@@ -32,5 +32,5 @@ dependencies {
     implementation 'com.android.support:design:27.1.1'
     testImplementation 'junit:junit:4.12'
     implementation project(':libcling4android')
-    implementation project(':mediaplayer')
+    implementation project(':tvplayer')
 }

@@ -54,7 +54,7 @@
         </activity>
 
         <receiver
-            android:name="com.android.media.player.DlnaRendererReceiver"
+            android:name="com.android.media.player.cmd.PlayerCommandReceiver"
             android:enabled="true"
             android:exported="false">
         </receiver>
