@@ -5,7 +5,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
-import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.android.media.ui.VideoPlayerActivity;
@@ -156,7 +156,10 @@ public class ZxtMediaPlayer {
 //        mContext.startService(intent);
         Intent intent2 = new Intent();
         intent2.setClass(mContext.getApplicationContext(), VideoPlayerActivity.class);
-        intent2.setDataAndType(Uri.parse(uri.toString()), "video/*");
+        Bundle bundle = new Bundle();
+        bundle.putString("mediatitle", name);
+        bundle.putString("playurl", uri.toString());
+        intent2.putExtras(bundle);
         mContext.startActivity(intent2);
     }
 

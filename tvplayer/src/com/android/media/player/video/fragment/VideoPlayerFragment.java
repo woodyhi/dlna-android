@@ -3,7 +3,6 @@
  */
 package com.android.media.player.video.fragment;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
@@ -39,7 +38,6 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
@@ -52,6 +50,7 @@ import android.widget.Toast;
 import com.android.media.player.video.IPlayerController;
 import com.android.media.player.video.MediaUtil;
 import com.android.media.player.video.MyOrientationEventListener;
+import com.android.media.utility.AnimUtil;
 import com.android.media.utility.Util;
 import com.media.player.ott.R;
 
@@ -103,6 +102,9 @@ public class VideoPlayerFragment extends Fragment implements SurfaceHolder.Callb
     // 快进/快退
     private LinearLayout mFastForwardProgressLayout;
     private TextView mFastForwardProgresText;
+
+    private LinearLayout player_top_bar;
+    private TextView mediaTitle;
     /* player bottom bar */
     private LinearLayout mPlayerBottomBar;
     private boolean mShowing;
@@ -117,6 +119,7 @@ public class VideoPlayerFragment extends Fragment implements SurfaceHolder.Callb
     private boolean mSeeking = false;
 
     private MediaPlayer mMediaPlayer;
+    private String mediaName;
     private String mMediaPath;
     private boolean playingOnSurface = false;
     private boolean completed;
@@ -153,11 +156,13 @@ public class VideoPlayerFragment extends Fragment implements SurfaceHolder.Callb
     //		this.lastPosition = playedTime;
     //	}
 
-    public void play(String path, int playedTime, int videoType) {
+    public void play(String title, String path, int playedTime, int videoType) {
         if (path == null) {
             Log.e(TAG, "********** playurl is null **********");
             return;
         }
+
+        mediaName = title;
         mMediaPath = path;
         lastPosition = playedTime;
         this.videoType = videoType;
@@ -289,6 +294,8 @@ public class VideoPlayerFragment extends Fragment implements SurfaceHolder.Callb
         mVolumePercent = (TextView) view.findViewById(R.id.volume_percent_tv);
         mFastForwardProgressLayout = (LinearLayout) view.findViewById(R.id.fast_forward_progress_layout);
         mFastForwardProgresText = (TextView) view.findViewById(R.id.fast_forward_progress_text);
+        player_top_bar = view.findViewById(R.id.player_top_bar);
+        mediaTitle = view.findViewById(R.id.media_title);
         mPlayerBottomBar = (LinearLayout) view.findViewById(R.id.player_bottom_bar);
         playPauseBtn = (ImageView) view.findViewById(R.id.play_pause_btn);
         centerPlayPause = view.findViewById(R.id.center_play_pause);
@@ -332,6 +339,7 @@ public class VideoPlayerFragment extends Fragment implements SurfaceHolder.Callb
             Log.d(TAG, "mediaplayer instance is null , creating");
             playPauseBtn.setBackgroundResource(R.drawable.ic_media_pause);
             mMediaPlayer = createMediaPlayer(holder, mMediaPath);
+            mediaTitle.setText(mediaName);
 
         } else {
             Log.d(TAG, "mediaplayer instance is existsing");
@@ -641,8 +649,8 @@ public class VideoPlayerFragment extends Fragment implements SurfaceHolder.Callb
         myHandler.sendEmptyMessage(REFRESH_PLAYBACK_PROGRESS);
         if (!mShowing) {
             mShowing = true;
-            mPlayerBottomBar.setAnimation(AnimationUtils.loadAnimation(mContext, R.anim.show_up));
-            mPlayerBottomBar.setVisibility(View.VISIBLE);
+            AnimUtil.slideInAtTop(player_top_bar);
+            AnimUtil.slideInAtBottom(mPlayerBottomBar);
         }
         myHandler.removeMessages(HANDLER_HIDE_PLAYER_BOTTOM_BAR);
         if (fadeout)
@@ -656,8 +664,8 @@ public class VideoPlayerFragment extends Fragment implements SurfaceHolder.Callb
         Log.d(TAG, "hideOverlay() : hiden");
         if (mShowing) {
             mShowing = false;
-            mPlayerBottomBar.setAnimation(AnimationUtils.loadAnimation(mContext, R.anim.hide_down));
-            mPlayerBottomBar.setVisibility(View.GONE);
+            AnimUtil.slideOutAtTop(player_top_bar);
+            AnimUtil.slideOutAtBottom(mPlayerBottomBar);
         }
     }
 
