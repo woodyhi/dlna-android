@@ -11,6 +11,7 @@ import android.util.Log;
 import com.android.media.ui.VideoPlayerActivity;
 import com.june.cling.c.Action;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.fourthline.cling.model.types.UnsignedIntegerFourBytes;
 import org.fourthline.cling.support.avtransport.lastchange.AVTransportVariable;
 import org.fourthline.cling.support.lastchange.LastChange;
@@ -157,7 +158,7 @@ public class ZxtMediaPlayer {
         Intent intent2 = new Intent();
         intent2.setClass(mContext.getApplicationContext(), VideoPlayerActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString("mediatitle", name);
+        bundle.putString("mediatitle", StringEscapeUtils.unescapeHtml4(name));
         bundle.putString("playurl", uri.toString());
         intent2.putExtras(bundle);
         mContext.startActivity(intent2);
